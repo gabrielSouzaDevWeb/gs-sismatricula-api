@@ -1,0 +1,107 @@
+{
+  "version": "1.0",
+  "resources": [
+    {
+      "name": "Matricula",
+      "children": [
+        {
+          "name": "Criar Matricula",
+          "method": "POST",
+          "url": "http://localhost:3000/api/matricula/create",
+          "headers": {
+            "Content-Type": "application/json"
+          },
+          "body": {}
+        },
+        {
+          "name": "Listar Matrículas",
+          "method": "GET",
+          "url": "http://localhost:3000/api/matricula/get-many",
+          "headers": {
+            "Content-Type": "application/json"
+          },
+          "query": {
+            "page": 1,
+            "limit": 10
+          }
+        },
+        {
+          "name": "Buscar Matrícula por ID",
+          "method": "GET",
+          "url": "http://localhost:3000/api/matricula/get-many-by-id/{id}",
+          "headers": {
+            "Content-Type": "application/json"
+          }
+        },
+        {
+          "name": "Atualizar Matrícula",
+          "method": "PUT",
+          "url": "http://localhost:3000/api/matricula/update/{id}",
+          "headers": {
+            "Content-Type": "application/json"
+          },
+          "body": {}
+        },
+        {
+          "name": "Remover Matrícula",
+          "method": "DELETE",
+          "url": "http://localhost:3000/api/matricula/delete/{id}",
+          "headers": {
+            "Content-Type": "application/json"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Filiacao",
+      "children": [
+        {
+          "name": "Criar Filiacao",
+          "method": "POST",
+          "url": "http://localhost:3000/api/filiacao/create",
+          "headers": {
+            "Content-Type": "application/json"
+          },
+          "body": {}
+        },
+        {
+          "name": "Listar Filiações",
+          "method": "GET",
+          "url": "http://localhost:3000/api/filiacao/get-many",
+          "headers": {
+            "Content-Type": "application/json"
+          },
+          "query": {
+            "page": 1,
+            "limit": 10
+          }
+        },
+        {
+          "name": "Buscar Filiacao por ID",
+          "method": "GET",
+          "url": "http://localhost:3000/api/filiacao/get-one-by-id/{id}",
+          "headers": {
+            "Content-Type": "application/json"
+          }
+        },
+        {
+          "name": "Atualizar Filiacao",
+          "method": "PUT",
+          "url": "http://localhost:3000/api/filiacao/update/{id}",
+          "headers": {
+            "Content-Type": "application/json"
+          },
+          "body": {}
+        },
+        {
+          "name": "Remover Filiacao",
+          "method": "DELETE",
+          "url": "http://localhost:3000/api/filiacao/delete/{id}",
+          "headers": {
+            "Content-Type": "application/json"
+          }
+        }
+      ]
+    }
+  ]
+}

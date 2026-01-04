@@ -1,0 +1,453 @@
+{
+  "_type": "export",
+  "__export_format": 4,
+  "__export_date": "2026-01-04T00:00:00.000Z",
+  "__export_source": "insomnia.desktop.app:v2023.5.8",
+  "resources": [
+    {
+      "_id": "wrk_sismatricula",
+      "_type": "workspace",
+      "name": "SisMatricula API",
+      "description": "API para Sistema de Matrícula",
+      "scope": "collection"
+    },
+    {
+      "_id": "fld_estudante",
+      "_type": "request_group",
+      "parentId": "wrk_sismatricula",
+      "name": "Estudante"
+    },
+    {
+      "_id": "req_estudante_create",
+      "_type": "request",
+      "parentId": "fld_estudante",
+      "name": "Criar Estudante",
+      "method": "POST",
+      "url": "http://localhost:3000/api/estudante",
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        },
+        {
+          "name": "x-authentication-token",
+          "value": "08623cca-dd33-4bf7-8ed7-aec8209436dc"
+        }
+      ],
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"nome\": \"João da Silva\",\n  \"dataNascimento\": \"2010-05-15\",\n  \"sexo\": \"M\",\n  \"serie\": \"5º Ano\",\n  \"escola\": \"Escola Municipal ABC\",\n  \"numeroContato\": \"11999887766\",\n  \"alergicoMedicamento\": \"Dipirona\",\n  \"alergiaAlimento\": \"Amendoim\",\n  \"tratamentoMedico\": \"Acompanhamento psicológico\"\n}"
+      }
+    },
+    {
+      "_id": "req_estudante_list",
+      "_type": "request",
+      "parentId": "fld_estudante",
+      "name": "Listar Estudantes",
+      "method": "GET",
+      "url": "http://localhost:3000/api/estudante?page=1&limit=10&nome=João&serie=5º",
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        },
+        {
+          "name": "x-authentication-token",
+          "value": "08623cca-dd33-4bf7-8ed7-aec8209436dc"
+        }
+      ]
+    },
+    {
+      "_id": "req_estudante_get",
+      "_type": "request",
+      "parentId": "fld_estudante",
+      "name": "Buscar Estudante por ID",
+      "method": "GET",
+      "url": "http://localhost:3000/api/estudante/{{ _.id }}",
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        },
+        {
+          "name": "x-authentication-token",
+          "value": "08623cca-dd33-4bf7-8ed7-aec8209436dc"
+        }
+      ]
+    },
+    {
+      "_id": "req_estudante_update",
+      "_type": "request",
+      "parentId": "fld_estudante",
+      "name": "Atualizar Estudante",
+      "method": "PUT",
+      "url": "http://localhost:3000/api/estudante/{{ _.id }}",
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        },
+        {
+          "name": "x-authentication-token",
+          "value": "08623cca-dd33-4bf7-8ed7-aec8209436dc"
+        }
+      ],
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"nome\": \"João da Silva Atualizado\",\n  \"numeroContato\": \"11988776655\"\n}"
+      }
+    },
+    {
+      "_id": "req_estudante_delete",
+      "_type": "request",
+      "parentId": "fld_estudante",
+      "name": "Remover Estudante (Soft Delete)",
+      "method": "DELETE",
+      "url": "http://localhost:3000/api/estudante/{{ _.id }}",
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        },
+        {
+          "name": "x-authentication-token",
+          "value": "08623cca-dd33-4bf7-8ed7-aec8209436dc"
+        }
+      ]
+    },
+    {
+      "_id": "fld_filiacao",
+      "_type": "request_group",
+      "parentId": "wrk_sismatricula",
+      "name": "Filiação"
+    },
+    {
+      "_id": "req_filiacao_create",
+      "_type": "request",
+      "parentId": "fld_filiacao",
+      "name": "Criar Filiação",
+      "method": "POST",
+      "url": "http://localhost:3000/api/filiacao/create",
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        },
+        {
+          "name": "x-authentication-token",
+          "value": "08623cca-dd33-4bf7-8ed7-aec8209436dc"
+        }
+      ],
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"nome\": \"Maria da Silva\",\n  \"dataNascimento\": \"1985-03-20\",\n  \"rg\": \"123456789\",\n  \"cpf\": \"12345678900\",\n  \"estadoCivil\": \"Casada\",\n  \"enderecoRes\": \"Rua das Flores\",\n  \"numeroEndereco\": \"123\",\n  \"bairro\": \"Centro\",\n  \"cidade\": \"São Paulo\",\n  \"uf\": \"SP\",\n  \"cep\": \"01234-567\",\n  \"telefoneRes\": \"1133334444\",\n  \"celular\": \"11999887766\",\n  \"email\": \"maria@email.com\",\n  \"profissao\": \"Professora\",\n  \"local\": \"Escola XYZ\",\n  \"idEstudante\": \"uuid-do-estudante-aqui\"\n}"
+      }
+    },
+    {
+      "_id": "req_filiacao_list",
+      "_type": "request",
+      "parentId": "fld_filiacao",
+      "name": "Listar Filiações",
+      "method": "GET",
+      "url": "http://localhost:3000/api/filiacao/get-many?page=1&limit=10&nome=Maria&cpf=123",
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        },
+        {
+          "name": "x-authentication-token",
+          "value": "08623cca-dd33-4bf7-8ed7-aec8209436dc"
+        }
+      ]
+    },
+    {
+      "_id": "req_filiacao_get",
+      "_type": "request",
+      "parentId": "fld_filiacao",
+      "name": "Buscar Filiação por ID",
+      "method": "GET",
+      "url": "http://localhost:3000/api/filiacao/get-one-by-id/{{ _.id }}",
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        },
+        {
+          "name": "x-authentication-token",
+          "value": "08623cca-dd33-4bf7-8ed7-aec8209436dc"
+        }
+      ]
+    },
+    {
+      "_id": "req_filiacao_update",
+      "_type": "request",
+      "parentId": "fld_filiacao",
+      "name": "Atualizar Filiação",
+      "method": "PUT",
+      "url": "http://localhost:3000/api/filiacao/update/{{ _.id }}",
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        },
+        {
+          "name": "x-authentication-token",
+          "value": "08623cca-dd33-4bf7-8ed7-aec8209436dc"
+        }
+      ],
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"celular\": \"11988887777\",\n  \"email\": \"maria.nova@email.com\"\n}"
+      }
+    },
+    {
+      "_id": "req_filiacao_delete",
+      "_type": "request",
+      "parentId": "fld_filiacao",
+      "name": "Remover Filiação (Soft Delete)",
+      "method": "DELETE",
+      "url": "http://localhost:3000/api/filiacao/delete/{{ _.id }}",
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        },
+        {
+          "name": "x-authentication-token",
+          "value": "08623cca-dd33-4bf7-8ed7-aec8209436dc"
+        }
+      ]
+    },
+    {
+      "_id": "fld_horario",
+      "_type": "request_group",
+      "parentId": "wrk_sismatricula",
+      "name": "Horário"
+    },
+    {
+      "_id": "req_horario_create",
+      "_type": "request",
+      "parentId": "fld_horario",
+      "name": "Criar Horário",
+      "method": "POST",
+      "url": "http://localhost:3000/api/horario/create",
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        },
+        {
+          "name": "x-authentication-token",
+          "value": "08623cca-dd33-4bf7-8ed7-aec8209436dc"
+        }
+      ],
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"turno\": \"manha\",\n  \"horaInicio\": \"08:00\",\n  \"horaFim\": \"12:00\",\n  \"descricao\": \"Turno matutino - Segunda a Sexta\",\n  \"tipoAula\": \"regular\"\n}"
+      }
+    },
+    {
+      "_id": "req_horario_list",
+      "_type": "request",
+      "parentId": "fld_horario",
+      "name": "Listar Horários",
+      "method": "GET",
+      "url": "http://localhost:3000/api/horario/get-many?page=1&limit=10&turno=manha&tipoAula=regular",
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        },
+        {
+          "name": "x-authentication-token",
+          "value": "08623cca-dd33-4bf7-8ed7-aec8209436dc"
+        }
+      ]
+    },
+    {
+      "_id": "req_horario_get",
+      "_type": "request",
+      "parentId": "fld_horario",
+      "name": "Buscar Horário por ID",
+      "method": "GET",
+      "url": "http://localhost:3000/api/horario/get-one-by-id/{{ _.id }}",
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        },
+        {
+          "name": "x-authentication-token",
+          "value": "08623cca-dd33-4bf7-8ed7-aec8209436dc"
+        }
+      ]
+    },
+    {
+      "_id": "req_horario_update",
+      "_type": "request",
+      "parentId": "fld_horario",
+      "name": "Atualizar Horário",
+      "method": "PUT",
+      "url": "http://localhost:3000/api/horario/update/{{ _.id }}",
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        },
+        {
+          "name": "x-authentication-token",
+          "value": "08623cca-dd33-4bf7-8ed7-aec8209436dc"
+        }
+      ],
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"turno\": \"tarde\",\n  \"horaInicio\": \"13:00\",\n  \"horaFim\": \"17:00\"\n}"
+      }
+    },
+    {
+      "_id": "req_horario_delete",
+      "_type": "request",
+      "parentId": "fld_horario",
+      "name": "Remover Horário (Soft Delete)",
+      "method": "DELETE",
+      "url": "http://localhost:3000/api/horario/delete/{{ _.id }}",
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        },
+        {
+          "name": "x-authentication-token",
+          "value": "08623cca-dd33-4bf7-8ed7-aec8209436dc"
+        }
+      ]
+    },
+    {
+      "_id": "fld_matricula",
+      "_type": "request_group",
+      "parentId": "wrk_sismatricula",
+      "name": "Matrícula"
+    },
+    {
+      "_id": "req_matricula_create",
+      "_type": "request",
+      "parentId": "fld_matricula",
+      "name": "Criar Matrícula (Simples)",
+      "method": "POST",
+      "url": "http://localhost:3000/api/matricula/create",
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        },
+        {
+          "name": "x-authentication-token",
+          "value": "08623cca-dd33-4bf7-8ed7-aec8209436dc"
+        }
+      ],
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"idEstudante\": \"uuid-do-estudante-aqui\",\n  \"anoLetivo\": \"2026\",\n  \"idHorario\": \"uuid-do-horario-aqui\",\n  \"dataMatricula\": \"2026-01-04\",\n  \"status\": \"ativa\",\n  \"valorMensalidade\": 450.00,\n  \"observacoes\": \"Primeira matrícula\"\n}"
+      }
+    },
+    {
+      "_id": "req_matricula_create_nested",
+      "_type": "request",
+      "parentId": "fld_matricula",
+      "name": "Criar Matrícula (Com Estudante e Filiações)",
+      "method": "POST",
+      "url": "http://localhost:3000/api/matricula/create",
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        },
+        {
+          "name": "x-authentication-token",
+          "value": "08623cca-dd33-4bf7-8ed7-aec8209436dc"
+        }
+      ],
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"estudante\": {\n    \"nome\": \"Pedro Santos\",\n    \"dataNascimento\": \"2011-08-10\",\n    \"sexo\": \"M\",\n    \"serie\": \"6º Ano\",\n    \"escola\": \"Escola Estadual XYZ\",\n    \"numeroContato\": \"11987654321\"\n  },\n  \"filiacoes\": [\n    {\n      \"nome\": \"Ana Santos\",\n      \"dataNascimento\": \"1988-12-05\",\n      \"cpf\": \"98765432100\",\n      \"celular\": \"11987654321\",\n      \"email\": \"ana@email.com\",\n      \"profissao\": \"Enfermeira\",\n      \"isResponsavelPagamento\": true\n    },\n    {\n      \"nome\": \"Carlos Santos\",\n      \"dataNascimento\": \"1985-07-22\",\n      \"cpf\": \"11122233344\",\n      \"celular\": \"11976543210\",\n      \"email\": \"carlos@email.com\",\n      \"profissao\": \"Engenheiro\"\n    }\n  ],\n  \"idTurno\": \"<UUID_DO_TURNO>\",\n  \"anoLetivo\": \"2026\",\n  \"status\": \"ativa\",\n  \"valorMensalidade\": 500.00\n}"
+      }
+    },
+    {
+      "_id": "req_matricula_list",
+      "_type": "request",
+      "parentId": "fld_matricula",
+      "name": "Listar Matrículas",
+      "method": "GET",
+      "url": "http://localhost:3000/api/matricula/get-many?page=1&limit=10&anoLetivo=2026&status=ativa",
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        },
+        {
+          "name": "x-authentication-token",
+          "value": "08623cca-dd33-4bf7-8ed7-aec8209436dc"
+        }
+      ]
+    },
+    {
+      "_id": "req_matricula_get",
+      "_type": "request",
+      "parentId": "fld_matricula",
+      "name": "Buscar Matrícula por ID",
+      "method": "GET",
+      "url": "http://localhost:3000/api/matricula/get-many-by-id/{{ _.id }}",
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        },
+        {
+          "name": "x-authentication-token",
+          "value": "08623cca-dd33-4bf7-8ed7-aec8209436dc"
+        }
+      ]
+    },
+    {
+      "_id": "req_matricula_update",
+      "_type": "request",
+      "parentId": "fld_matricula",
+      "name": "Atualizar Matrícula",
+      "method": "PUT",
+      "url": "http://localhost:3000/api/matricula/update/{{ _.id }}",
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        },
+        {
+          "name": "x-authentication-token",
+          "value": "08623cca-dd33-4bf7-8ed7-aec8209436dc"
+        }
+      ],
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"status\": \"concluida\",\n  \"valorMensalidade\": 480.00,\n  \"observacoes\": \"Matrícula concluída com sucesso\"\n}"
+      }
+    },
+    {
+      "_id": "req_matricula_delete",
+      "_type": "request",
+      "parentId": "fld_matricula",
+      "name": "Remover Matrícula (Soft Delete)",
+      "method": "DELETE",
+      "url": "http://localhost:3000/api/matricula/delete/{{ _.id }}",
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        },
+        {
+          "name": "x-authentication-token",
+          "value": "08623cca-dd33-4bf7-8ed7-aec8209436dc"
+        }
+      ]
+    }
+  ]
+}
