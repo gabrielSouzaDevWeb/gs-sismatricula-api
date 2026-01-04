@@ -1,10 +1,14 @@
 import { ValidationPipe } from '@nestjs/common';
-import { NestFactory } from '@nestjs/core';
+import { NestFactory, Reflector } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { GlobalExceptionFilter } from './shared/filters/http-exception.filter';
+import { GeoBlockGuard, HostnameGuard, UserAgentGuard } from './shared/guards';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, {});
+  const reflector = app.get(Reflector);
+
+  // Filtros e pipes globais
   app.useGlobalFilters(new GlobalExceptionFilter());
   app.useGlobalPipes(
     new ValidationPipe({
@@ -12,6 +16,13 @@ async function bootstrap() {
       forbidNonWhitelisted: true,
       transform: true,
     }),
+  );
+
+  // Guards de segurança globais
+  app.useGlobalGuards(
+    new GeoBlockGuard(),
+    new UserAgentGuard(),
+    new HostnameGuard(),
   );
 
   app.setGlobalPrefix('api');
