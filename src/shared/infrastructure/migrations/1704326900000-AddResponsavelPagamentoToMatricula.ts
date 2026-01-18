@@ -11,7 +11,7 @@ export class AddResponsavelPagamentoToMatricula1704326900000 implements Migratio
       'matriculas',
       new TableColumn({
         name: 'idResponsavelPagamento',
-        type: 'uuid',
+        type: 'int',
         isNullable: true,
       }),
     );

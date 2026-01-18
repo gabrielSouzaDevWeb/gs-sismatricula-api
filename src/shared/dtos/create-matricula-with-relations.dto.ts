@@ -3,11 +3,11 @@ import {
   ArrayMinSize,
   IsArray,
   IsIn,
+  IsInt,
   IsNotEmpty,
   IsNumber,
   IsOptional,
   IsString,
-  MaxLength,
   Min,
   ValidateNested,
 } from 'class-validator';
@@ -25,14 +25,13 @@ export class CreateMatriculaWithRelationsDto {
   @Type(() => CreateFiliacaoNestedDto)
   filiacoes: CreateFiliacaoNestedDto[];
 
-  @IsString()
+  @IsNumber()
   @IsNotEmpty()
-  idTurno: string;
+  idTurno: number;
 
-  @IsString()
-  @IsNotEmpty()
-  @MaxLength(10)
-  anoLetivo: string;
+  @Type(() => Number)
+  @IsInt()
+  anoLetivo: number;
 
   @IsOptional()
   @IsString()

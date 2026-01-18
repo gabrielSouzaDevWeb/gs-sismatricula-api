@@ -4,14 +4,14 @@ export class CreateHorarioTable1704326700000 implements MigrationInterface {
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.createTable(
       new Table({
-        name: 'horarios',
+        name: 'turno',
         columns: [
           {
             name: 'id',
-            type: 'uuid',
+            type: 'int',
             isPrimary: true,
-            generationStrategy: 'uuid',
-            default: 'uuid_generate_v4()',
+            isGenerated: true,
+            generationStrategy: 'increment',
           },
           {
             name: 'turno',
@@ -55,6 +55,6 @@ export class CreateHorarioTable1704326700000 implements MigrationInterface {
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {
-    await queryRunner.dropTable('horarios');
+    await queryRunner.dropTable('turno');
   }
 }

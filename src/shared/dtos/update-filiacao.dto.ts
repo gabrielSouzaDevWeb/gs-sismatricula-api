@@ -1,21 +1,26 @@
+import { Type } from 'class-transformer';
 import {
   IsDateString,
   IsEmail,
   IsInt,
-  IsNotEmpty,
   IsOptional,
   IsString,
   MaxLength,
 } from 'class-validator';
+import { Filiacao } from '../infrastructure/entities/filiacao.entity';
 
-export class CreateFiliacaoDto {
+export class UpdateFiliacaoDto implements Partial<Filiacao> {
+  @Type(() => Number)
+  @IsInt()
+  id: number;
+  @IsOptional()
   @IsString()
-  @IsNotEmpty()
   @MaxLength(255)
-  nome: string;
+  nome?: string;
 
+  @IsOptional()
   @IsDateString()
-  dataNascimento: string;
+  dataNascimento?: Date;
 
   @IsOptional()
   @IsString()
@@ -97,6 +102,7 @@ export class CreateFiliacaoDto {
   @MaxLength(255)
   email?: string;
 
+  @IsOptional()
   @IsInt()
-  idEstudante: number;
+  idEstudante?: number;
 }

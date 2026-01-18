@@ -9,3 +9,7 @@ export * from './filiacao-query.dto';
 export * from './horario-query.dto';
 export * from './matricula-query.dto';
 export * from './pagination.dto';
+export * from './update-estudante.dto';
+export * from './update-filiacao.dto';
+export * from './update-matricula.dto';
+export * from './update-turno.dto';

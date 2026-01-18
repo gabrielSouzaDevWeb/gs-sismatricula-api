@@ -8,10 +8,10 @@ export class CreateEstudanteTable1704326400000 implements MigrationInterface {
         columns: [
           {
             name: 'id',
-            type: 'uuid',
+            type: 'int',
             isPrimary: true,
-            generationStrategy: 'uuid',
-            default: 'uuid_generate_v4()',
+            isGenerated: true,
+            generationStrategy: 'increment',
           },
           {
             name: 'nome',
@@ -65,7 +65,7 @@ export class CreateEstudanteTable1704326400000 implements MigrationInterface {
           },
           {
             name: 'idResponsavelPagamento',
-            type: 'uuid',
+            type: 'int',
             isNullable: true,
           },
           {

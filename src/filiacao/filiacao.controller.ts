@@ -4,12 +4,16 @@ import {
   Delete,
   Get,
   Param,
+  ParseIntPipe,
   Post,
   Put,
   Query,
 } from '@nestjs/common';
-import { Filiacao } from 'src/shared/infrastructure/entities';
-import { CreateFiliacaoDto, FiliacaoQueryDto } from '../shared/dtos';
+import {
+  CreateFiliacaoDto,
+  FiliacaoQueryDto,
+  UpdateFiliacaoDto,
+} from '../shared/dtos';
 import { FiliacaoService } from './filiacao.service';
 
 @Controller('filiacao')
@@ -27,17 +31,20 @@ export class FiliacaoController {
   }
 
   @Get('get-one-by-id/:id')
-  findOne(@Param('id') id: string) {
+  findOne(@Param('id', ParseIntPipe) id: number) {
     return this.service.findOne(id);
   }
 
   @Put('update/:id')
-  update(@Param('id') id: string, @Body() data: Partial<Filiacao>) {
+  update(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() data: UpdateFiliacaoDto,
+  ) {
     return this.service.update(id, data);
   }
 
   @Delete('delete/:id')
-  remove(@Param('id') id: string) {
+  remove(@Param('id', ParseIntPipe) id: number) {
     return this.service.remove(id);
   }
 }

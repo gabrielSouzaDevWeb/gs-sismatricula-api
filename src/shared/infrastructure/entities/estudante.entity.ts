@@ -2,8 +2,6 @@ import {
   Column,
   DeleteDateColumn,
   Entity,
-  JoinColumn,
-  ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
@@ -12,8 +10,8 @@ import { Matricula } from './matricula.entity';
 
 @Entity('estudantes')
 export class Estudante {
-  @PrimaryGeneratedColumn('uuid')
-  id: string;
+  @PrimaryGeneratedColumn('increment')
+  id: number;
 
   @Column({ type: 'varchar', length: 255 })
   nome: string;
@@ -44,13 +42,6 @@ export class Estudante {
 
   @Column({ type: 'text', nullable: true })
   medicacaoEspecifica: string;
-
-  @ManyToOne(() => Filiacao, { nullable: true })
-  @JoinColumn({ name: 'idResponsavelPagamento' })
-  responsavelPagamento: Filiacao;
-
-  @Column({ type: 'uuid', nullable: true })
-  idResponsavelPagamento: string;
 
   @OneToMany(() => Filiacao, (filiacao) => filiacao.estudante)
   filiacoes: Filiacao[];

@@ -5,15 +5,19 @@ import {
   NotFoundException,
   Scope,
 } from '@nestjs/common';
+import { EstudanteService } from 'src/estudante/estudante.service';
 import { DataSource, Repository } from 'typeorm';
 import {
   CreateMatriculaWithRelationsDto,
   MatriculaQueryDto,
+  UpdateMatriculaDto,
 } from '../shared/dtos';
-import { Estudante, Filiacao } from '../shared/infrastructure/entities';
+import { Estudante } from '../shared/infrastructure/entities';
 import { Matricula } from '../shared/infrastructure/entities/matricula.entity';
 import { TENANT_CONNECTION_DATABASE_PROVIDER } from '../shared/infrastructure/tenant';
 import { ServiceResponse } from '../shared/utils';
+import { FiliacaoService } from './../filiacao/filiacao.service';
+import { Filiacao } from './../shared/infrastructure/entities/filiacao.entity';
 
 @Injectable({ scope: Scope.REQUEST })
 export class MatriculaService {
@@ -22,6 +26,8 @@ export class MatriculaService {
   constructor(
     @Inject(TENANT_CONNECTION_DATABASE_PROVIDER)
     private readonly dataSource: DataSource,
+    private readonly estudanteService: EstudanteService,
+    private readonly filiacaoService: FiliacaoService,
   ) {
     this.repository = this.dataSource.getRepository(Matricula);
   }
@@ -73,14 +79,18 @@ export class MatriculaService {
         (f) => f.isResponsavelPagamento === true,
       );
       const idResponsavelPagamento = filiacoesSaved[indexResponsavel].id;
-
+      if (!idResponsavelPagamento) {
+        throw new BadRequestException(
+          'Erro ao identificar responsável pelo pagamento',
+        );
+      }
       const matriculaEntity = matriculaRepo.create({
-        anoLetivo: data.anoLetivo,
-        status: data.status ?? 'ativa',
+        anoLetivo: Number(data.anoLetivo),
+        status: String(data.status ?? 'ativa'),
         valorMensalidade: data.valorMensalidade,
         observacoes: data.observacoes,
         idEstudante: estudanteSaved.id,
-        idHorario: data.idTurno,
+        idTurno: data.idTurno,
         idResponsavelPagamento,
       });
       const matriculaSaved = await matriculaRepo.save(matriculaEntity);
@@ -90,7 +100,7 @@ export class MatriculaService {
 
     const matriculaWithRelations = await this.repository.findOne({
       where: { id: result.matriculaSaved.id },
-      relations: { estudante: { filiacoes: true }, horario: true },
+      relations: { estudante: { filiacoes: true }, turno: true },
     });
 
     return new ServiceResponse(
@@ -103,17 +113,21 @@ export class MatriculaService {
     query: MatriculaQueryDto,
   ): Promise<ServiceResponse<Matricula[]>> {
     const page = query.page ?? 1;
-    const limit = query.limit ?? 10;
+    const limit = query.perPage ?? 10;
 
     const where: any = {};
     if (query.idEstudante) where.idEstudante = query.idEstudante;
-    if (query.idHorario) where.idHorario = query.idHorario;
+    if (query.idTurno) where.idTurno = query.idTurno;
     if (query.anoLetivo) where.anoLetivo = query.anoLetivo;
     if (query.status) where.status = query.status;
 
     const [items, total] = await this.repository.findAndCount({
       where,
-      relations: { estudante: { filiacoes: true }, horario: true },
+      relations: {
+        estudante: { filiacoes: true },
+        turno: true,
+        responsavelPagamento: true,
+      },
       skip: (page - 1) * limit,
       take: limit,
       order: { dtCriacao: 'DESC' },
@@ -126,17 +140,17 @@ export class MatriculaService {
     });
   }
 
-  async findOne(id: string): Promise<ServiceResponse<Matricula | null>> {
+  async findOne(id: number): Promise<ServiceResponse<Matricula | null>> {
     const item = await this.repository.findOne({
       where: { id },
-      relations: { estudante: { filiacoes: true }, horario: true },
+      relations: { estudante: { filiacoes: true }, turno: true },
     });
     return new ServiceResponse('Matrícula recuperada com sucesso', item);
   }
 
   async update(
-    id: string,
-    data: Partial<Matricula>,
+    id: number,
+    data: UpdateMatriculaDto,
   ): Promise<ServiceResponse<Matricula | null>> {
     // Verificar se registro existe e não está deletado
     const existing = await this.repository.findOne({ where: { id } });
@@ -146,15 +160,43 @@ export class MatriculaService {
       );
     }
 
-    await this.repository.update(id, data);
+    // Atualizar dados do estudante se fornecidos
+    if (data.estudante) {
+      await this.estudanteService.update(existing.idEstudante, data.estudante);
+    }
+
+    // Atualizar dados das filiações se fornecidas
+    if (data.filiacoes && data.filiacoes.length > 0) {
+      for (const filiacao of data.filiacoes) {
+        if (!filiacao.id) {
+          throw new BadRequestException(
+            'ID da filiação é obrigatório para atualização',
+          );
+        }
+        await this.filiacaoService.update(filiacao.id, filiacao);
+      }
+    }
+
+    // Extrair apenas campos da matrícula para atualizar
+    const { estudante, filiacoes, ...matriculaData } = data;
+
+    // Atualizar matrícula apenas se houver campos para atualizar
+    if (Object.keys(matriculaData).length > 0) {
+      await this.repository.update(id, matriculaData);
+    }
+
     const updated = await this.repository.findOne({
       where: { id },
-      relations: { estudante: { filiacoes: true }, horario: true },
+      relations: {
+        estudante: { filiacoes: true },
+        turno: true,
+        responsavelPagamento: true,
+      },
     });
     return new ServiceResponse('Matrícula atualizada com sucesso', updated);
   }
 
-  async remove(id: string): Promise<ServiceResponse<null>> {
+  async remove(id: number): Promise<ServiceResponse<null>> {
     await this.repository.softDelete(id);
     return new ServiceResponse('Matrícula removida com sucesso');
   }

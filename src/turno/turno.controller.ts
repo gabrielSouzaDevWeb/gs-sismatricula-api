@@ -4,12 +4,12 @@ import {
   Delete,
   Get,
   Param,
+  ParseIntPipe,
   Post,
   Put,
   Query,
 } from '@nestjs/common';
-import { CreateTurnoDto, TurnoQueryDto } from '../shared/dtos';
-import { Turno } from '../shared/infrastructure/entities/horario.entity';
+import { CreateTurnoDto, TurnoQueryDto, UpdateTurnoDto } from '../shared/dtos';
 import { TurnoService } from './turno.service';
 
 @Controller('turno')
@@ -27,17 +27,17 @@ export class TurnoController {
   }
 
   @Get('get-one-by-id/:id')
-  findOne(@Param('id') id: string) {
+  findOne(@Param('id', ParseIntPipe) id: number) {
     return this.service.findOne(id);
   }
 
   @Put('update/:id')
-  update(@Param('id') id: string, @Body() data: Partial<Turno>) {
+  update(@Param('id', ParseIntPipe) id: number, @Body() data: UpdateTurnoDto) {
     return this.service.update(id, data);
   }
 
   @Delete('delete/:id')
-  remove(@Param('id') id: string) {
+  remove(@Param('id', ParseIntPipe) id: number) {
     return this.service.remove(id);
   }
 }

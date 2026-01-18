@@ -24,7 +24,7 @@ export class FiliacaoService {
 
   async findAll(query: FiliacaoQueryDto): Promise<ServiceResponse<Filiacao[]>> {
     const page = query.page ?? 1;
-    const limit = query.limit ?? 10;
+    const limit = query.perPage ?? 10;
 
     const where: any = {};
     if (query.nome) where.nome = ILike(`%${query.nome}%`);
@@ -45,7 +45,7 @@ export class FiliacaoService {
     });
   }
 
-  async findOne(id: string): Promise<ServiceResponse<Filiacao | null>> {
+  async findOne(id: number): Promise<ServiceResponse<Filiacao | null>> {
     const item = await this.repository.findOne({
       where: { id },
       relations: { estudante: true },
@@ -54,7 +54,7 @@ export class FiliacaoService {
   }
 
   async update(
-    id: string,
+    id: number,
     data: Partial<Filiacao>,
   ): Promise<ServiceResponse<Filiacao | null>> {
     // Verificar se registro existe e não está deletado
@@ -73,7 +73,7 @@ export class FiliacaoService {
     return new ServiceResponse('Filiação atualizada com sucesso', updated);
   }
 
-  async remove(id: string): Promise<ServiceResponse<null>> {
+  async remove(id: number): Promise<ServiceResponse<null>> {
     await this.repository.softDelete(id);
     return new ServiceResponse('Filiação removida com sucesso');
   }

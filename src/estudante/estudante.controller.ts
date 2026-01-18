@@ -4,12 +4,16 @@ import {
   Delete,
   Get,
   Param,
+  ParseIntPipe,
   Post,
   Put,
   Query,
 } from '@nestjs/common';
-import { CreateEstudanteDto, EstudanteQueryDto } from '../shared/dtos';
-import { Estudante } from '../shared/infrastructure/entities';
+import {
+  CreateEstudanteDto,
+  EstudanteQueryDto,
+  UpdateEstudanteDto,
+} from '../shared/dtos';
 import { EstudanteService } from './estudante.service';
 
 @Controller('estudante')
@@ -27,17 +31,20 @@ export class EstudanteController {
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
+  findOne(@Param('id', ParseIntPipe) id: number) {
     return this.service.findOne(id);
   }
 
   @Put(':id')
-  update(@Param('id') id: string, @Body() data: Partial<Estudante>) {
+  update(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() data: UpdateEstudanteDto,
+  ) {
     return this.service.update(id, data);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
+  remove(@Param('id', ParseIntPipe) id: number) {
     return this.service.remove(id);
   }
 }

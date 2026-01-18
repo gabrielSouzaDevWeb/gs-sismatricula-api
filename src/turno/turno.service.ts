@@ -5,7 +5,7 @@ import {
   NotFoundException,
   Scope,
 } from '@nestjs/common';
-import { DataSource, Repository } from 'typeorm';
+import { DataSource, Raw, Repository } from 'typeorm';
 import { TurnoQueryDto } from '../shared/dtos';
 import { Turno } from '../shared/infrastructure/entities/horario.entity';
 import { TENANT_CONNECTION_DATABASE_PROVIDER } from '../shared/infrastructure/tenant';
@@ -43,11 +43,24 @@ export class TurnoService {
 
   async findAll(query: TurnoQueryDto): Promise<ServiceResponse<Turno[]>> {
     const page = query.page ?? 1;
-    const limit = query.limit ?? 10;
+    const limit = query.perPage ?? 10;
 
     const where: any = {};
-    if (query.turno) where.turno = query.turno;
-    if (query.tipoAula) where.tipoAula = query.tipoAula;
+    if (query.turno) {
+      const term = `%${query.turno}%`;
+      where.turno = Raw(
+        (alias) => `unaccent(${alias}) ILIKE unaccent(:turno)`,
+        { turno: term },
+      );
+    }
+
+    if (query.tipoAula) {
+      const term = `%${query.tipoAula}%`;
+      where.tipoAula = Raw(
+        (alias) => `unaccent(${alias}) ILIKE unaccent(:tipoAula)`,
+        { tipoAula: term },
+      );
+    }
 
     const [items, total] = await this.repository.findAndCount({
       where,
@@ -63,13 +76,13 @@ export class TurnoService {
     });
   }
 
-  async findOne(id: string): Promise<ServiceResponse<Turno | null>> {
+  async findOne(id: number): Promise<ServiceResponse<Turno | null>> {
     const item = await this.repository.findOne({ where: { id } });
     return new ServiceResponse('Turno recuperado com sucesso', item);
   }
 
   async update(
-    id: string,
+    id: number,
     data: Partial<Turno>,
   ): Promise<ServiceResponse<Turno | null>> {
     // Verificar se registro existe e não está deletado
@@ -83,7 +96,7 @@ export class TurnoService {
     return new ServiceResponse('Turno atualizado com sucesso', updated);
   }
 
-  async remove(id: string): Promise<ServiceResponse<null>> {
+  async remove(id: number): Promise<ServiceResponse<null>> {
     await this.repository.softDelete(id);
     return new ServiceResponse('Turno removido com sucesso');
   }

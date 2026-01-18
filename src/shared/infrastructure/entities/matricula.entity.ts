@@ -12,25 +12,25 @@ import { Turno } from './horario.entity';
 
 @Entity('matriculas')
 export class Matricula {
-  @PrimaryGeneratedColumn('uuid')
-  id: string;
+  @PrimaryGeneratedColumn('increment')
+  id: number;
 
   @ManyToOne(() => Estudante, (estudante) => estudante.matriculas)
   @JoinColumn({ name: 'idEstudante' })
   estudante: Estudante;
 
-  @Column({ type: 'uuid' })
-  idEstudante: string;
+  @Column({ type: 'int' })
+  idEstudante: number;
 
-  @Column({ type: 'varchar', length: 10 })
-  anoLetivo: string;
+  @Column({ type: 'int' })
+  anoLetivo: number;
 
-  @ManyToOne(() => Turno, (horario) => horario.matriculas, { nullable: true })
-  @JoinColumn({ name: 'idHorario' })
-  horario: Turno;
+  @ManyToOne(() => Turno, (turno) => turno.matriculas, { nullable: true })
+  @JoinColumn({ name: 'idTurno' })
+  turno: Turno;
 
-  @Column({ type: 'uuid', nullable: true })
-  idHorario: string;
+  @Column({ type: 'int', nullable: true })
+  idTurno: number;
 
   @ManyToOne(
     () => Filiacao,
@@ -40,11 +40,11 @@ export class Matricula {
   @JoinColumn({ name: 'idResponsavelPagamento' })
   responsavelPagamento: Filiacao;
 
-  @Column({ type: 'uuid', nullable: true })
-  idResponsavelPagamento: string;
+  @Column({ type: 'int', nullable: true })
+  idResponsavelPagamento: number;
 
   @Column({ type: 'varchar', length: 50, default: 'ativa' })
-  status: string; // ativa, cancelada, concluida
+  status?: string; // ativa, cancelada, concluida
 
   @Column({ type: 'decimal', precision: 10, scale: 2, nullable: true })
   valorMensalidade: number;

@@ -13,10 +13,10 @@ export class CreateFiliacaoTable1704326500000 implements MigrationInterface {
         columns: [
           {
             name: 'id',
-            type: 'uuid',
+            type: 'int',
             isPrimary: true,
-            generationStrategy: 'uuid',
-            default: 'uuid_generate_v4()',
+            isGenerated: true,
+            generationStrategy: 'increment',
           },
           {
             name: 'nome',
@@ -125,7 +125,7 @@ export class CreateFiliacaoTable1704326500000 implements MigrationInterface {
           },
           {
             name: 'idEstudante',
-            type: 'uuid',
+            type: 'int',
           },
           {
             name: 'dtCriacao',

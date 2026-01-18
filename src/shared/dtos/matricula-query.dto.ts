@@ -1,19 +1,22 @@
-import { IsIn, IsOptional, IsString, IsUUID, MaxLength } from 'class-validator';
+import { Type } from 'class-transformer';
+import { IsIn, IsInt, IsOptional, IsString } from 'class-validator';
 import { PaginationDto } from './pagination.dto';
 
 export class MatriculaQueryDto extends PaginationDto {
   @IsOptional()
-  @IsUUID()
-  idEstudante?: string;
+  @Type(() => Number)
+  @IsInt()
+  idEstudante?: number;
 
   @IsOptional()
-  @IsUUID()
-  idHorario?: string;
+  @Type(() => Number)
+  @IsInt()
+  idTurno?: number;
 
   @IsOptional()
-  @IsString()
-  @MaxLength(10)
-  anoLetivo?: string;
+  @Type(() => Number)
+  @IsInt()
+  anoLetivo?: number;
 
   @IsOptional()
   @IsString()

@@ -1,35 +1,36 @@
 import {
   IsDateString,
   IsIn,
-  IsInt,
-  IsNotEmpty,
   IsOptional,
   IsString,
   MaxLength,
 } from 'class-validator';
+import { Estudante } from '../infrastructure/entities/estudante.entity';
 
-export class CreateEstudanteDto {
+export class UpdateEstudanteDto implements Partial<Estudante> {
+  @IsOptional()
   @IsString()
-  @IsNotEmpty()
   @MaxLength(255)
-  nome: string;
+  nome?: string;
 
+  @IsOptional()
   @IsDateString()
-  dataNascimento: string;
+  dataNascimento?: string;
 
+  @IsOptional()
   @IsString()
   @IsIn(['M', 'F'])
-  sexo: string;
+  sexo?: string;
 
+  @IsOptional()
   @IsString()
-  @IsNotEmpty()
   @MaxLength(100)
-  serie: string;
+  serie?: string;
 
+  @IsOptional()
   @IsString()
-  @IsNotEmpty()
   @MaxLength(255)
-  escola: string;
+  escola?: string;
 
   @IsOptional()
   @IsString()
@@ -51,8 +52,4 @@ export class CreateEstudanteDto {
   @IsOptional()
   @IsString()
   medicacaoEspecifica?: string;
-
-  @IsOptional()
-  @IsInt()
-  idResponsavelPagamento?: number;
 }

@@ -28,7 +28,7 @@ export class EstudanteService {
     query: EstudanteQueryDto,
   ): Promise<ServiceResponse<Estudante[]>> {
     const page = query.page ?? 1;
-    const limit = query.limit ?? 10;
+    const limit = query.perPage ?? 10;
 
     const where: any = {};
     if (query.nome) where.nome = ILike(`%${query.nome}%`);
@@ -50,7 +50,7 @@ export class EstudanteService {
     });
   }
 
-  async findOne(id: string): Promise<ServiceResponse<Estudante | null>> {
+  async findOne(id: number): Promise<ServiceResponse<Estudante | null>> {
     const item = await this.repository.findOne({
       where: { id },
       relations: { filiacoes: true, matriculas: true },
@@ -59,7 +59,7 @@ export class EstudanteService {
   }
 
   async update(
-    id: string,
+    id: number,
     data: Partial<Estudante>,
   ): Promise<ServiceResponse<Estudante | null>> {
     // Verificar se registro existe e não está deletado
@@ -78,7 +78,7 @@ export class EstudanteService {
     return new ServiceResponse('Estudante atualizado com sucesso', updated);
   }
 
-  async remove(id: string): Promise<ServiceResponse<null>> {
+  async remove(id: number): Promise<ServiceResponse<null>> {
     await this.repository.softDelete(id);
     return new ServiceResponse('Estudante removido com sucesso');
   }

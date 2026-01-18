@@ -4,6 +4,7 @@ import {
   Delete,
   Get,
   Param,
+  ParseIntPipe,
   Post,
   Put,
   Query,
@@ -11,8 +12,8 @@ import {
 import {
   CreateMatriculaWithRelationsDto,
   MatriculaQueryDto,
+  UpdateMatriculaDto,
 } from '../shared/dtos';
-import { Matricula } from '../shared/infrastructure/entities/matricula.entity';
 import { MatriculaService } from './matricula.service';
 
 @Controller('matricula')
@@ -30,17 +31,20 @@ export class MatriculaController {
   }
 
   @Get('get-one-by-id/:id')
-  findOne(@Param('id') id: string) {
+  findOne(@Param('id', ParseIntPipe) id: number) {
     return this.service.findOne(id);
   }
 
   @Put('update/:id')
-  update(@Param('id') id: string, @Body() data: Partial<Matricula>) {
+  update(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() data: UpdateMatriculaDto,
+  ) {
     return this.service.update(id, data);
   }
 
   @Delete('delete/:id')
-  remove(@Param('id') id: string) {
+  remove(@Param('id', ParseIntPipe) id: number) {
     return this.service.remove(id);
   }
 }

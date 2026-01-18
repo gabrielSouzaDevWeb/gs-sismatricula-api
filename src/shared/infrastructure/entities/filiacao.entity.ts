@@ -12,8 +12,8 @@ import { Matricula } from './matricula.entity';
 
 @Entity('filiacoes')
 export class Filiacao {
-  @PrimaryGeneratedColumn('uuid')
-  id: string;
+  @PrimaryGeneratedColumn('increment')
+  id: number;
 
   @Column({ type: 'varchar', length: 255 })
   nome: string;
@@ -73,8 +73,8 @@ export class Filiacao {
   @JoinColumn({ name: 'idEstudante' })
   estudante: Estudante;
 
-  @Column({ type: 'uuid' })
-  idEstudante: string;
+  @Column({ type: 'int' })
+  idEstudante: number;
 
   @OneToMany(() => Matricula, (matricula) => matricula.responsavelPagamento)
   matriculasResponsavelPagamento: Matricula[];

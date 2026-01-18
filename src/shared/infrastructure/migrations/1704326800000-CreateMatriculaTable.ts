@@ -13,23 +13,22 @@ export class CreateMatriculaTable1704326800000 implements MigrationInterface {
         columns: [
           {
             name: 'id',
-            type: 'uuid',
+            type: 'int',
             isPrimary: true,
-            generationStrategy: 'uuid',
-            default: 'uuid_generate_v4()',
+            isGenerated: true,
+            generationStrategy: 'increment',
           },
           {
             name: 'idEstudante',
-            type: 'uuid',
+            type: 'int',
           },
           {
             name: 'anoLetivo',
-            type: 'varchar',
-            length: '10',
+            type: 'int',
           },
           {
-            name: 'idHorario',
-            type: 'uuid',
+            name: 'idTurno',
+            type: 'int',
             isNullable: true,
           },
           {
@@ -52,6 +51,11 @@ export class CreateMatriculaTable1704326800000 implements MigrationInterface {
           {
             name: 'observacoes',
             type: 'text',
+            isNullable: true,
+          },
+          {
+            name: 'idResponsavelPagamento',
+            type: 'int',
             isNullable: true,
           },
           {
@@ -82,9 +86,19 @@ export class CreateMatriculaTable1704326800000 implements MigrationInterface {
     await queryRunner.createForeignKey(
       'matriculas',
       new TableForeignKey({
-        columnNames: ['idHorario'],
+        columnNames: ['idTurno'],
         referencedColumnNames: ['id'],
-        referencedTableName: 'horarios',
+        referencedTableName: 'turno',
+        onDelete: 'SET NULL',
+      }),
+    );
+
+    await queryRunner.createForeignKey(
+      'matriculas',
+      new TableForeignKey({
+        columnNames: ['idResponsavelPagamento'],
+        referencedColumnNames: ['id'],
+        referencedTableName: 'filiacoes',
         onDelete: 'SET NULL',
       }),
     );
@@ -105,12 +119,22 @@ export class CreateMatriculaTable1704326800000 implements MigrationInterface {
     await queryRunner.dropForeignKey('matriculas', foreignKeyEstudante);
 
     const foreignKeyHorario = table.foreignKeys.find(
-      (fk) => fk.columnNames.indexOf('idHorario') !== -1,
+      (fk) => fk.columnNames.indexOf('idTurno') !== -1,
     );
     if (!foreignKeyHorario) {
       return;
     }
     await queryRunner.dropForeignKey('matriculas', foreignKeyHorario);
+
+    const foreignKeyResponsavelPagamento = table.foreignKeys.find(
+      (fk) => fk.columnNames.indexOf('idResponsavelPagamento') !== -1,
+    );
+    if (foreignKeyResponsavelPagamento) {
+      await queryRunner.dropForeignKey(
+        'matriculas',
+        foreignKeyResponsavelPagamento,
+      );
+    }
 
     await queryRunner.dropTable('matriculas');
   }

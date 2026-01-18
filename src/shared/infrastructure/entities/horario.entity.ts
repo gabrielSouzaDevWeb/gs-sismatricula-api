@@ -7,10 +7,10 @@ import {
 } from 'typeorm';
 import { Matricula } from './matricula.entity';
 
-@Entity('horarios')
+@Entity('turno')
 export class Turno {
-  @PrimaryGeneratedColumn('uuid')
-  id: string;
+  @PrimaryGeneratedColumn('increment')
+  id: number;
 
   @Column({ type: 'varchar', length: 50 })
   turno: string; // manha, tarde, noite, integral
@@ -27,7 +27,7 @@ export class Turno {
   @Column({ type: 'varchar', length: 50, default: 'reforco' })
   tipoAula: string; // reforco, regular, extra
 
-  @OneToMany(() => Matricula, (matricula) => matricula.horario)
+  @OneToMany(() => Matricula, (matricula) => matricula.turno)
   matriculas: Matricula[];
 
   @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
