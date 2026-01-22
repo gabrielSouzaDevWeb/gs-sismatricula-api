@@ -6,7 +6,7 @@ import {
   Scope,
 } from '@nestjs/common';
 import { EstudanteService } from 'src/estudante/estudante.service';
-import { DataSource, Repository } from 'typeorm';
+import { DataSource, Raw, Repository } from 'typeorm';
 import {
   CreateMatriculaWithRelationsDto,
   MatriculaQueryDto,
@@ -120,6 +120,14 @@ export class MatriculaService {
     if (query.idTurno) where.idTurno = query.idTurno;
     if (query.anoLetivo) where.anoLetivo = query.anoLetivo;
     if (query.status) where.status = query.status;
+
+    if (query['estudante.nome']) {
+      where.estudante = where.estudante ?? {};
+      where.estudante.nome = Raw(
+        (alias) => `unaccent(${alias}) ILIKE unaccent(:nome)`,
+        { nome: `%${query['estudante.nome']}%` },
+      );
+    }
 
     const [items, total] = await this.repository.findAndCount({
       where,
