@@ -1,5 +1,7 @@
 import {
+  BeforeSoftRemove,
   Column,
+  DataSource,
   DeleteDateColumn,
   Entity,
   OneToMany,
@@ -42,4 +44,22 @@ export class Turno {
 
   @DeleteDateColumn({ type: 'timestamp', name: 'dtDeletado', nullable: true })
   dtDeletado: Date | null;
+
+  @BeforeSoftRemove()
+  async checkReferences(dataSource?: DataSource) {
+    if (!dataSource) {
+      throw new Error(
+        'Não foi possível verificar referências antes da remoção.',
+      );
+    }
+    const matriculaRepo = dataSource.getRepository(Matricula);
+    const count = await matriculaRepo.count({
+      where: { idTurno: this.id },
+    });
+    if (count > 0) {
+      throw new Error(
+        'Não é possível remover o turno porque existem matrículas ativas com este turno.',
+      );
+    }
+  }
 }

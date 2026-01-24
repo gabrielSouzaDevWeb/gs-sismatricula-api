@@ -5,6 +5,7 @@ import {
   NotFoundException,
   Scope,
 } from '@nestjs/common';
+import { Matricula } from 'src/shared/infrastructure/entities';
 import { DataSource, Raw, Repository } from 'typeorm';
 import { TurnoQueryDto } from '../shared/dtos';
 import { Turno } from '../shared/infrastructure/entities/horario.entity';
@@ -97,7 +98,26 @@ export class TurnoService {
   }
 
   async remove(id: number): Promise<ServiceResponse<null>> {
+    const turno = await this.repository.findOne({ where: { id } });
+    if (!turno || turno.dtDeletado) {
+      throw new NotFoundException(
+        `Turno ${id} não encontrado ou já foi removido`,
+      );
+    }
+
+    // Verificar se há matrículas ativas referenciando este turno
+    const matriculaRepo = this.dataSource.getRepository(Matricula);
+    const count = await matriculaRepo.count({
+      where: { idTurno: id },
+    });
+
+    if (count > 0) {
+      throw new BadRequestException(
+        'Não é possível remover porque existem matrículas ativas com este turno.',
+      );
+    }
+
     await this.repository.softDelete(id);
-    return new ServiceResponse('Turno removido com sucesso');
+    return new ServiceResponse('Turno removido com sucesso', null);
   }
 }
