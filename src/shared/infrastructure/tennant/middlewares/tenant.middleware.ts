@@ -27,41 +27,18 @@ export interface connection {
 export class TenantMiddleware implements NestMiddleware {
   tenantsConnections: tenantsConnections[] = [
     {
-      id: 1,
-      publicId: '3574dde5-4e98-4e55-9f97-34a93463e7d7',
+      id: parseInt(process.env.TENANT_1_ID || '1'),
+      publicId: process.env.TENANT_1_PUBLIC_ID || 'tenant_1_public_id',
       connection: {
-        name: 'c3',
-        type: 'postgres',
-        host: 'host.docker.internal',
-        port: 5432,
-        username: 'postgres',
-        password: 'postgres',
-        database: 'GS_DB_ESCOLA_ARTE_DO_SABER',
-        synchronize: false,
-      },
-    },
-    {
-      id: 2,
-      publicId: '08623cca-dd33-4bf7-8ed7-aec8209436dc',
-      connection: {
-        name: 'c3',
-        host: 'localhost',
-        port: 5432,
-        username: 'postgres',
-        password: 'postgres',
-        database: 'db-gs-arte-do-saber-api',
-      },
-    },
-    {
-      id: 3,
-      publicId: '93916aa3-f2b8-41ba-9b13-4315ac1704d0',
-      connection: {
-        name: 'c3',
-        host: 'host.docker.internal',
-        port: 5432,
-        username: 'postgres',
-        password: 'postgres',
-        database: 'GS_DB_ESCOLA_ARTE_DO_SABER',
+        name:
+          `${process.env.TENANT_1_DATABASE}_${process.env.TENANT_1_ID}` || 'c3',
+        type: process.env.TENANT_1_TYPE || 'postgres',
+        host: process.env.TENANT_1_HOST || 'host.docker.internal',
+        port: parseInt(process.env.TENANT_1_PORT || '5432'),
+        username: process.env.TENANT_1_USERNAME || 'postgres',
+        password: process.env.TENANT_1_PASSWORD || 'postgres',
+        database: process.env.TENANT_1_DATABASE || 'dbname',
+        synchronize: process.env.TENANT_1_SYNCHRONIZE === 'S' || false,
       },
     },
   ];

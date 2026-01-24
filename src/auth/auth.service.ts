@@ -6,7 +6,12 @@ import { BruteForceService } from '../shared/services/brute-force.service';
 export class AuthService {
   constructor(private readonly bruteForceService: BruteForceService) {}
 
-  private users = [{ username: 'admin', password: 'admin' }];
+  private users = [
+    {
+      username: process.env.ADMIN_USERNAME || +new Date(),
+      password: process.env.ADMIN_PASSWORD || +new Date(),
+    },
+  ];
 
   login(loginDto: LoginDto, ip: string): { token: string } {
     const user = this.users.find(
@@ -20,6 +25,6 @@ export class AuthService {
     }
 
     this.bruteForceService.resetAttempts(ip);
-    return { token: '08623cca-dd33-4bf7-8ed7-aec8209436dc' };
+    return { token: process.env.TENANT_1_PUBLIC_ID || 'tenant_1_public_id' };
   }
 }

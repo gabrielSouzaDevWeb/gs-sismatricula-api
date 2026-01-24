@@ -4,6 +4,9 @@ import { PaginationDto } from './pagination.dto';
 
 export class MatriculaQueryDto extends PaginationDto {
   @IsOptional()
+  id: number;
+
+  @IsOptional()
   @Type(() => Number)
   idEstudante?: number;
 

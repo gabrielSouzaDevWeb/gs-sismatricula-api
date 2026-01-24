@@ -3,6 +3,9 @@ import { PaginationDto } from './pagination.dto';
 
 export class EstudanteQueryDto extends PaginationDto {
   @IsOptional()
+  id: number;
+
+  @IsOptional()
   @IsString()
   @MaxLength(255)
   nome?: string;
