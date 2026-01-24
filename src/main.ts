@@ -22,11 +22,17 @@ async function bootstrap() {
   app.enableCors({
     origin: [
       'gabrielsouzadevweb.com.br',
+      '*gabrielsouzadevweb.com.br*',
       'localhost',
       '127.0.0.1',
       'http://localhost:4200',
       'http://127.0.0.1:4200',
+      'http://localhost:8080',
+      'http://127.0.0.1:8080',
       'https://gabrielsouzadevweb.com.br',
+      'https://*gabrielsouzadevweb.com.br*',
+      'https://*gabrielsouzadevweb.com.br*',
+      process.env.FRONTEND_URL,
     ],
     credentials: true,
   });
