@@ -7,16 +7,28 @@ import {
 
 export class AddResponsavelPagamentoToMatricula1704326900000 implements MigrationInterface {
   public async up(queryRunner: QueryRunner): Promise<void> {
-    await queryRunner.addColumn(
-      'matriculas',
-      new TableColumn({
-        name: 'idResponsavelPagamento',
-        type: 'int',
-        isNullable: true,
-      }),
+    const table = await queryRunner.getTable('matriculas');
+    const columnExists = table?.columns.some(
+      (col) => col.name === 'idResponsavelPagamento',
     );
 
-    await queryRunner.createForeignKey(
+    if (!columnExists) {
+      await queryRunner.addColumn(
+        'matriculas',
+        new TableColumn({
+          name: 'idResponsavelPagamento',
+          type: 'int',
+          isNullable: true,
+        }),
+      );
+    }
+
+    const foreignKeyExists = table?.foreignKeys.some(
+      (fk) => fk.columnNames.indexOf('idResponsavelPagamento') !== -1,
+    );
+
+    if (!foreignKeyExists) {
+      await queryRunner.createForeignKey(
       'matriculas',
       new TableForeignKey({
         columnNames: ['idResponsavelPagamento'],
@@ -24,7 +36,8 @@ export class AddResponsavelPagamentoToMatricula1704326900000 implements Migratio
         referencedTableName: 'filiacoes',
         onDelete: 'SET NULL',
       }),
-    );
+      );
+    }
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {

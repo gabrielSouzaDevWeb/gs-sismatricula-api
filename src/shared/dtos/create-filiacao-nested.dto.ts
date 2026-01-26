@@ -20,7 +20,7 @@ export class CreateFiliacaoNestedDto {
   isResponsavelPagamento?: boolean;
 
   @IsDateString()
-  dataNascimento: string;
+  dataNascimento?: string;
 
   @IsOptional()
   @IsString()

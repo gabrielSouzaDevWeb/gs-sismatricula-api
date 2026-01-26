@@ -15,7 +15,7 @@ export class CreateFiliacaoDto {
   nome: string;
 
   @IsDateString()
-  dataNascimento: string;
+  dataNascimento?: string;
 
   @IsOptional()
   @IsString()

@@ -21,6 +21,8 @@ async function bootstrap() {
   // CORS configuration
   app.enableCors({
     origin: [
+      'https://gs-sismatricula-app.apps.gabrielsouzadevweb.com.br/',
+      'http://gs-sismatricula-app.apps.gabrielsouzadevweb.com.br/',
       'gabrielsouzadevweb.com.br',
       '*gabrielsouzadevweb.com.br*',
       'localhost',
