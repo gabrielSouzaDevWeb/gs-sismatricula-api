@@ -47,4 +47,9 @@ export class CreateMatriculaWithRelationsDto {
   @IsOptional()
   @IsString()
   observacoes?: string;
+
+  @IsOptional()
+  @Type(() => Number)
+  @IsInt()
+  idResponsavelPagamento?: number;
 }

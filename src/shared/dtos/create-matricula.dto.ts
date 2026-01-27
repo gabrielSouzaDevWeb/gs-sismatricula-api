@@ -10,6 +10,7 @@ import {
 
 export class CreateMatriculaDto {
   @Type(() => Number)
+  @IsOptional()
   @IsInt()
   idEstudante: number;
 

@@ -1,7 +1,6 @@
 import { Type } from 'class-transformer';
 import {
   IsDateString,
-  IsEmail,
   IsInt,
   IsOptional,
   IsString,
@@ -10,13 +9,14 @@ import {
 import { Filiacao } from '../infrastructure/entities/filiacao.entity';
 
 export class UpdateFiliacaoDto implements Partial<Filiacao> {
+  @IsOptional()
   @Type(() => Number)
   @IsInt()
-  id: number;
-  @IsOptional()
+  id?: number;
+
   @IsString()
   @MaxLength(255)
-  nome?: string;
+  nome: string;
 
   @IsOptional()
   @IsDateString()
@@ -98,11 +98,16 @@ export class UpdateFiliacaoDto implements Partial<Filiacao> {
   outroTelefones?: string;
 
   @IsOptional()
-  @IsEmail()
+  // @IsEmail()
   @MaxLength(255)
   email?: string;
 
   @IsOptional()
   @IsInt()
   idEstudante?: number;
+
+  @IsOptional()
+  @Type(() => Number)
+  @IsInt()
+  isResponsavelPagamento?: number;
 }

@@ -1,6 +1,5 @@
 import {
   IsDateString,
-  IsEmail,
   IsInt,
   IsNotEmpty,
   IsOptional,
@@ -16,7 +15,7 @@ export class CreateFiliacaoDto {
 
   @IsOptional()
   @IsDateString()
-  dataNascimento?: string;
+  dataNascimento?: string | Date;
 
   @IsOptional()
   @IsString()
@@ -66,7 +65,7 @@ export class CreateFiliacaoDto {
   @IsString()
   @IsNotEmpty()
   @MaxLength(20)
-  celular: string;
+  celular?: string;
 
   @IsOptional()
   @IsString()
@@ -94,7 +93,6 @@ export class CreateFiliacaoDto {
   outroTelefones?: string;
 
   @IsOptional()
-  @IsEmail()
   @MaxLength(255)
   email?: string;
 

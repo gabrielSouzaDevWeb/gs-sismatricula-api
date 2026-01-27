@@ -160,48 +160,57 @@ export class MatriculaService {
     id: number,
     data: UpdateMatriculaDto,
   ): Promise<ServiceResponse<Matricula | null>> {
-    // Verificar se registro existe e não está deletado
-    const existing = await this.repository.findOne({ where: { id } });
-    if (!existing || existing.dtDeletado) {
-      throw new NotFoundException(
-        `Matrícula ${id} não encontrada ou foi removida`,
-      );
-    }
+    const result = await this.dataSource.transaction(async (manager) => {
+      const estudanteRepo = manager.getRepository(Estudante);
+      const filiacaoRepo = manager.getRepository(Filiacao);
+      const matriculaRepo = manager.getRepository(Matricula);
 
+      const existing = await matriculaRepo.findOne({ where: { id } });
+      if (!existing || existing.dtDeletado) {
+        throw new NotFoundException(
+          `Matrícula ${id} não encontrada ou foi removida`,
+        );
+      }
+
+      if (data.estudante) {
+        await estudanteRepo.update(existing.idEstudante, data.estudante);
+      }
+      if (data.filiacoes && data.filiacoes.length > 0) {
+        for (const filiacao of data.filiacoes) {
+          delete filiacao.isResponsavelPagamento;
+          if (!filiacao.id) {
+            filiacao.idEstudante = existing.idEstudante;
+            await filiacaoRepo.save(filiacao);
+          }
+
+          await filiacaoRepo.update(filiacao.id!, filiacao);
+          //remove campo temporário
+        }
+      }
+
+      // Extrair apenas campos da matrícula para atualizar
+      const { estudante, filiacoes, ...matriculaData } = data;
+
+      // Atualizar matrícula apenas se houver campos para atualizar
+      if (Object.keys(matriculaData).length > 0) {
+        await this.repository.update(id, matriculaData);
+      }
+
+      const updated = await this.repository.findOne({
+        where: { id },
+        relations: {
+          estudante: { filiacoes: true },
+          turno: true,
+          responsavelPagamento: true,
+        },
+      });
+      return new ServiceResponse('Matrícula atualizada com sucesso', updated);
+    });
+
+    return result;
     // Atualizar dados do estudante se fornecidos
-    if (data.estudante) {
-      await this.estudanteService.update(existing.idEstudante, data.estudante);
-    }
 
     // Atualizar dados das filiações se fornecidas
-    if (data.filiacoes && data.filiacoes.length > 0) {
-      for (const filiacao of data.filiacoes) {
-        if (!filiacao.id) {
-          throw new BadRequestException(
-            'ID da filiação é obrigatório para atualização',
-          );
-        }
-        await this.filiacaoService.update(filiacao.id, filiacao);
-      }
-    }
-
-    // Extrair apenas campos da matrícula para atualizar
-    const { estudante, filiacoes, ...matriculaData } = data;
-
-    // Atualizar matrícula apenas se houver campos para atualizar
-    if (Object.keys(matriculaData).length > 0) {
-      await this.repository.update(id, matriculaData);
-    }
-
-    const updated = await this.repository.findOne({
-      where: { id },
-      relations: {
-        estudante: { filiacoes: true },
-        turno: true,
-        responsavelPagamento: true,
-      },
-    });
-    return new ServiceResponse('Matrícula atualizada com sucesso', updated);
   }
 
   async remove(id: number): Promise<ServiceResponse<null>> {

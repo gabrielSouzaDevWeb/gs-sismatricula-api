@@ -98,7 +98,7 @@ export class CreateFiliacaoNestedDto {
   outroTelefones?: string;
 
   @IsOptional()
-  @IsEmail()
+ 
   @MaxLength(255)
   email?: string;
 }

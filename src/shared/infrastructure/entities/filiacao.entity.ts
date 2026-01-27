@@ -13,22 +13,22 @@ import { Matricula } from './matricula.entity';
 @Entity('filiacoes')
 export class Filiacao {
   @PrimaryGeneratedColumn('increment')
-  id: number;
+  id?: number;
 
   @Column({ type: 'varchar', length: 255 })
   nome: string;
 
   @Column({ type: 'date', nullable: true, name: 'data_nascimento' })
-  dataNascimento: Date;
+  dataNascimento?: Date;
 
   @Column({ type: 'varchar', length: 20, nullable: true })
-  rg: string;
+  rg?: string;
 
   @Column({ type: 'varchar', length: 14, nullable: true })
-  cpf: string;
+  cpf?: string;
 
   @Column({ type: 'varchar', length: 50, nullable: true, name: 'estado_civil' })
-  estadoCivil: string;
+  estadoCivil?: string;
 
   @Column({
     type: 'varchar',
@@ -36,7 +36,7 @@ export class Filiacao {
     nullable: true,
     name: 'endereco_res',
   })
-  enderecoRes: string;
+  enderecoRes?: string;
 
   @Column({
     type: 'varchar',
@@ -44,16 +44,16 @@ export class Filiacao {
     nullable: true,
     name: 'numero_endereco',
   })
-  numeroEndereco: string;
+  numeroEndereco?: string;
 
   @Column({ type: 'varchar', length: 100, nullable: true })
-  bairro: string;
+  bairro?: string;
 
   @Column({ type: 'varchar', length: 10, nullable: true })
-  cep: string;
+  cep?: string;
 
   @Column({ type: 'varchar', length: 255, nullable: true })
-  complemento: string;
+  complemento?: string;
 
   @Column({
     type: 'varchar',
@@ -61,13 +61,13 @@ export class Filiacao {
     nullable: true,
     name: 'telefone_residencial',
   })
-  telefoneResidencial: string;
+  telefoneResidencial?: string;
 
   @Column({ type: 'varchar', length: 20 })
-  celular: string;
+  celular?: string | undefined;
 
   @Column({ type: 'varchar', length: 100, nullable: true })
-  profissao: string;
+  profissao?: string;
 
   @Column({
     type: 'varchar',
@@ -75,7 +75,7 @@ export class Filiacao {
     nullable: true,
     name: 'nome_endereco_comercial',
   })
-  nomeEnderecoComercial: string;
+  nomeEnderecoComercial?: string;
 
   @Column({
     type: 'varchar',
@@ -83,7 +83,7 @@ export class Filiacao {
     nullable: true,
     name: 'telefone_comercial',
   })
-  telefoneComercial: string;
+  telefoneComercial?: string;
 
   @Column({
     type: 'varchar',
@@ -91,7 +91,7 @@ export class Filiacao {
     nullable: true,
     name: 'telefone_comercial2',
   })
-  telefoneComercial2: string;
+  telefoneComercial2?: string;
 
   @Column({
     type: 'varchar',
@@ -99,10 +99,10 @@ export class Filiacao {
     nullable: true,
     name: 'outro_telefones',
   })
-  outroTelefones: string;
+  outroTelefones?: string;
 
   @Column({ type: 'varchar', length: 255, nullable: true })
-  email: string;
+  email?: string;
 
   @ManyToOne(() => Estudante, (estudante) => estudante.filiacoes)
   @JoinColumn({ name: 'id_estudante' })
