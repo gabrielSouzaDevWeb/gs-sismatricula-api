@@ -27,11 +27,10 @@ export class CreateMatriculaDto {
   @IsIn(['ativa', 'cancelada', 'concluida'])
   status?: string;
 
-  @IsOptional()
   @Type(() => Number)
   @IsNumber({ maxDecimalPlaces: 2 })
   @Min(0)
-  valorMensalidade?: number;
+  valorMensalidade: number;
 
   @IsOptional()
   @IsString()

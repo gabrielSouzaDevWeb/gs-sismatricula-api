@@ -1,17 +1,22 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import { LoginDto } from '../shared/dtos/login.dto';
 import { BruteForceService } from '../shared/services/brute-force.service';
 
 @Injectable()
 export class AuthService {
-  constructor(private readonly bruteForceService: BruteForceService) {}
-
-  private users = [
-    {
-      username: process.env.ADMIN_USERNAME || +new Date(),
-      password: process.env.ADMIN_PASSWORD || +new Date(),
-    },
-  ];
+  private users: Array<{ username: string; password: string }> = [];
+  constructor(
+    private readonly bruteForceService: BruteForceService,
+    private readonly configService: ConfigService,
+  ) {
+    this.users.push({
+      username:
+        this.configService.get<string>('ADMIN_USERNAME') || `${+new Date()}`,
+      password:
+        this.configService.get<string>('ADMIN_PASSWORD') || `${+new Date()}`,
+    });
+  }
 
   login(loginDto: LoginDto, ip: string): { token: string } {
     const user = this.users.find(

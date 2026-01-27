@@ -14,6 +14,7 @@ export class CreateFiliacaoDto {
   @MaxLength(255)
   nome: string;
 
+  @IsOptional()
   @IsDateString()
   dataNascimento?: string;
 
@@ -62,10 +63,10 @@ export class CreateFiliacaoDto {
   @MaxLength(20)
   telefoneResidencial?: string;
 
-  @IsOptional()
   @IsString()
+  @IsNotEmpty()
   @MaxLength(20)
-  celular?: string;
+  celular: string;
 
   @IsOptional()
   @IsString()

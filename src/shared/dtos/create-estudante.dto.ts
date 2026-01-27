@@ -14,22 +14,24 @@ export class CreateEstudanteDto {
   @MaxLength(255)
   nome: string;
 
+  @IsOptional()
   @IsDateString()
-  dataNascimento: string;
+  dataNascimento?: string;
 
   @IsString()
+  @IsNotEmpty()
   @IsIn(['M', 'F'])
   sexo: string;
 
+  @IsOptional()
   @IsString()
-  @IsNotEmpty()
   @MaxLength(100)
-  serie: string;
+  serie?: string;
 
+  @IsOptional()
   @IsString()
-  @IsNotEmpty()
   @MaxLength(255)
-  escola: string;
+  escola?: string;
 
   @IsOptional()
   @IsString()

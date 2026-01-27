@@ -5,3 +5,5 @@ export { CreateMatriculaTable1704326800000 } from './1704326800000-CreateMatricu
 export { AddResponsavelPagamentoToMatricula1704326900000 } from './1704326900000-AddResponsavelPagamentoToMatricula';
 export { AddSoftDeleteColumns2026010300001 } from './2026010300001-AddSoftDeleteColumns';
 export { RemoveDataMatriculaColumn2026010400001 } from './2026010400001-RemoveDataMatriculaColumn';
+export { ConvertColumnsToSnakeCase2026012601001 } from './2026012601001-ConvertColumnsToSnakeCase';
+export { AdjustColumnNullability2026012602001 } from './2026012602001-AdjustColumnNullability';

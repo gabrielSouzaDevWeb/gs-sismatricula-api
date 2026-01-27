@@ -8,6 +8,7 @@ import { MatriculaModule } from './matricula/matricula.module';
 import { InfrastructureModule } from './shared/infrastructure/infrastructure.module';
 import { TenantMiddleware } from './shared/infrastructure/tennant/middlewares/tenant.middleware';
 import { TurnoModule } from './turno/turno.module';
+import { ConfigModule } from '@nestjs/config';
 
 @Module({
   imports: [
@@ -16,6 +17,11 @@ import { TurnoModule } from './turno/turno.module';
     EstudanteModule,
     FiliacaoModule,
     TurnoModule,
+
+    ConfigModule.forRoot({
+      isGlobal: true,
+      envFilePath: '.env',
+    }),
     MatriculaModule,
   ],
   controllers: [AppController],

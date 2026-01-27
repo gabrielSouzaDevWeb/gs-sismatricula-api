@@ -17,32 +17,42 @@ export class Turno {
   @Column({ type: 'varchar', length: 50 })
   turno: string; // manha, tarde, noite, integral
 
-  @Column({ type: 'time' })
+  @Column({ type: 'time', name: 'hora_inicio' })
   horaInicio: string;
 
-  @Column({ type: 'time' })
+  @Column({ type: 'time', name: 'hora_fim' })
   horaFim: string;
 
   @Column({ type: 'varchar', length: 100, nullable: true })
   descricao: string;
 
-  @Column({ type: 'varchar', length: 50, default: 'reforco' })
+  @Column({
+    type: 'varchar',
+    length: 50,
+    default: 'reforco',
+    name: 'tipo_aula',
+  })
   tipoAula: string; // reforco, regular, extra
 
   @OneToMany(() => Matricula, (matricula) => matricula.turno)
   matriculas: Matricula[];
 
-  @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
+  @Column({
+    type: 'timestamp',
+    default: () => 'CURRENT_TIMESTAMP',
+    name: 'dt_criacao',
+  })
   dtCriacao: Date;
 
   @Column({
     type: 'timestamp',
     default: () => 'CURRENT_TIMESTAMP',
     onUpdate: 'CURRENT_TIMESTAMP',
+    name: 'dt_atualizacao',
   })
   dtAtualizacao: Date;
 
-  @DeleteDateColumn({ type: 'timestamp', name: 'dtDeletado', nullable: true })
+  @DeleteDateColumn({ type: 'timestamp', name: 'dt_deletado', nullable: true })
   dtDeletado: Date | null;
 
   @BeforeSoftRemove()
