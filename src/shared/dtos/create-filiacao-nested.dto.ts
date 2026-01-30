@@ -1,7 +1,6 @@
 import {
   IsBoolean,
   IsDateString,
-  IsEmail,
   IsNotEmpty,
   IsOptional,
   IsString,
@@ -19,6 +18,7 @@ export class CreateFiliacaoNestedDto {
   @IsBoolean()
   isResponsavelPagamento?: boolean;
 
+  @IsOptional()
   @IsDateString()
   dataNascimento?: string;
 
@@ -98,7 +98,6 @@ export class CreateFiliacaoNestedDto {
   outroTelefones?: string;
 
   @IsOptional()
- 
   @MaxLength(255)
   email?: string;
 }
