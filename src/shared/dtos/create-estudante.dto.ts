@@ -9,18 +9,20 @@ import {
 } from 'class-validator';
 
 export class CreateEstudanteDto {
-  @IsString()
-  @IsNotEmpty()
-  @MaxLength(255)
+  @IsString({ message: 'O nome deve ser uma texto válida' })
+  @IsNotEmpty({ message: 'O nome é obrigatório' })
+  @MaxLength(255, { message: 'O nome não pode ter mais de 255 caracteres' })
   nome: string;
 
   @IsOptional()
   @IsDateString()
   dataNascimento?: string;
 
-  @IsString()
-  @IsNotEmpty()
-  @IsIn(['M', 'F'])
+  @IsString({ message: 'O sexo deve ser uma texto válida' })
+  @IsNotEmpty({ message: 'O sexo é obrigatório' })
+  @IsIn(['M', 'F'], {
+    message: 'O sexo deve ser "M" (masculino) ou "F" (feminino)',
+  })
   sexo: string;
 
   @IsOptional()

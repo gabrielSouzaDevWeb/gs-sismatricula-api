@@ -1,5 +1,6 @@
 import { Type } from 'class-transformer';
-import { IsIn, IsOptional, IsString } from 'class-validator';
+import { IsEnum, IsOptional, IsString } from 'class-validator';
+import { StatusMatricula } from '../enum/status-matricula.enum';
 import { PaginationDto } from './pagination.dto';
 
 export class MatriculaQueryDto extends PaginationDto {
@@ -19,9 +20,12 @@ export class MatriculaQueryDto extends PaginationDto {
   anoLetivo?: number;
 
   @IsOptional()
-  @IsString()
-  @IsIn(['ativa', 'cancelada', 'concluida'])
-  status?: string;
+  @Type(() => Number)
+  @IsEnum(StatusMatricula, {
+    message:
+      'O status deve ser um valor válido do enum StatusMatricula (1=Ativa, 2=Cancelada, 3=Trancada, 4=Concluída)',
+  })
+  status?: StatusMatricula;
 
   @IsOptional()
   @IsString()

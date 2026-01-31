@@ -6,6 +6,7 @@ import {
   Scope,
 } from '@nestjs/common';
 import { EstudanteService } from 'src/estudante/estudante.service';
+import { StatusMatricula } from 'src/shared/enum/status-matricula.enum';
 import { DataSource, Raw, Repository } from 'typeorm';
 import {
   CreateMatriculaWithRelationsDto,
@@ -59,6 +60,10 @@ export class MatriculaService {
         where: {
           nome: data.estudante.nome,
           dataNascimento: data.estudante.dataNascimento,
+          matriculas: {
+            anoLetivo: data.anoLetivo,
+            status: StatusMatricula.ATIVA,
+          },
         },
       });
       if (estudanteExistente) {
@@ -86,7 +91,7 @@ export class MatriculaService {
       }
       const matriculaEntity = matriculaRepo.create({
         anoLetivo: Number(data.anoLetivo),
-        status: String(data.status ?? 'ativa'),
+        status: data.status ?? StatusMatricula.ATIVA,
         valorMensalidade: data.valorMensalidade,
         observacoes: data.observacoes,
         idEstudante: estudanteSaved.id,

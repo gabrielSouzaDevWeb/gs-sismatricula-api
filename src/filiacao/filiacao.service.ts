@@ -1,5 +1,6 @@
 import { Inject, Injectable, NotFoundException, Scope } from '@nestjs/common';
 import { CreateFiliacaoDto, FiliacaoQueryDto } from 'src/shared/dtos';
+import { Matricula } from 'src/shared/infrastructure/entities';
 import { DataSource, ILike, Repository } from 'typeorm';
 import { Filiacao } from '../shared/infrastructure/entities/filiacao.entity';
 import { TENANT_CONNECTION_DATABASE_PROVIDER } from '../shared/infrastructure/tenant';
@@ -74,7 +75,28 @@ export class FiliacaoService {
   }
 
   async remove(id: number): Promise<ServiceResponse<null>> {
-    await this.repository.softDelete(id);
+    const delResult = await this.dataSource.manager.transaction(
+      async (transactionalEntityManager) => {
+        const matriculaRepo =
+          transactionalEntityManager.getRepository(Matricula);
+        const filiacaoRepo = transactionalEntityManager.getRepository(Filiacao);
+
+        const isFiliacaoResposavelPagamento: boolean =
+          await matriculaRepo.exists({ where: { idResponsavelPagamento: id } });
+
+        if (isFiliacaoResposavelPagamento) {
+          throw new NotFoundException(
+            `Não é possível remover essa filiação pois ela está vinculada como responsável de pagamento em uma matrícula.`,
+          );
+        }
+
+        return await filiacaoRepo.softDelete({ id });
+
+        // await estudanteRepo.softDelete(id);
+      },
+    );
     return new ServiceResponse('Filiação removida com sucesso');
+    //   await this.repository.softDelete(id);
+    //   return new ServiceResponse('Filiação removida com sucesso');
   }
 }

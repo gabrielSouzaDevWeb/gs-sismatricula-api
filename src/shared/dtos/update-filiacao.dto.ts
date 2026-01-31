@@ -1,11 +1,5 @@
 import { Type } from 'class-transformer';
-import {
-  IsDateString,
-  IsInt,
-  IsOptional,
-  IsString,
-  MaxLength,
-} from 'class-validator';
+import { IsInt, IsOptional, IsString, MaxLength } from 'class-validator';
 import { Filiacao } from '../infrastructure/entities/filiacao.entity';
 
 export class UpdateFiliacaoDto implements Partial<Filiacao> {
@@ -14,12 +8,11 @@ export class UpdateFiliacaoDto implements Partial<Filiacao> {
   @IsInt()
   id?: number;
 
-  @IsString()
-  @MaxLength(255)
+  @IsString({ message: 'O nome deve ser uma texto válida' })
+  @MaxLength(255, { message: 'O nome não pode ter mais de 255 caracteres' })
   nome: string;
 
   @IsOptional()
-  @IsDateString()
   dataNascimento?: Date;
 
   @IsOptional()

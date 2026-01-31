@@ -1,5 +1,4 @@
 import {
-  IsDateString,
   IsInt,
   IsNotEmpty,
   IsOptional,
@@ -8,13 +7,12 @@ import {
 } from 'class-validator';
 
 export class CreateFiliacaoDto {
-  @IsString()
-  @IsNotEmpty()
-  @MaxLength(255)
+  @IsString({ message: 'O nome deve ser uma texto válida' })
+  @IsNotEmpty({ message: 'O nome é obrigatório' })
+  @MaxLength(255, { message: 'O nome não pode ter mais de 255 caracteres' })
   nome: string;
 
   @IsOptional()
-  @IsDateString()
   dataNascimento?: string | Date;
 
   @IsOptional()
@@ -62,9 +60,9 @@ export class CreateFiliacaoDto {
   @MaxLength(20)
   telefoneResidencial?: string;
 
-  @IsString()
-  @IsNotEmpty()
-  @MaxLength(20)
+  @IsString({ message: 'O celular deve ser uma texto válida' })
+  @IsNotEmpty({ message: 'O celular é obrigatório' })
+  @MaxLength(20, { message: 'O celular não pode ter mais de 20 caracteres' })
   celular?: string;
 
   @IsOptional()
@@ -96,6 +94,6 @@ export class CreateFiliacaoDto {
   @MaxLength(255)
   email?: string;
 
-  @IsInt()
+  @IsInt({ message: 'O ID do estudante deve ser um número inteiro válido' })
   idEstudante: number;
 }

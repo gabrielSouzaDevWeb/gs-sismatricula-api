@@ -1,21 +1,15 @@
 import { Type } from 'class-transformer';
-import {
-  IsIn,
-  IsInt,
-  IsNumber,
-  IsOptional,
-  IsString,
-  Min,
-} from 'class-validator';
+import { IsEnum, IsInt, IsNumber, IsOptional, Min } from 'class-validator';
+import { StatusMatricula } from '../enum/status-matricula.enum';
 
 export class CreateMatriculaDto {
   @Type(() => Number)
   @IsOptional()
-  @IsInt()
+  @IsInt({ message: 'O ID do estudante deve ser um número inteiro válido' })
   idEstudante: number;
 
   @Type(() => Number)
-  @IsInt()
+  @IsInt({ message: 'O ano letivo deve ser um número inteiro válido' })
   anoLetivo: number;
 
   @IsOptional()
@@ -24,17 +18,25 @@ export class CreateMatriculaDto {
   idTurno?: number;
 
   @IsOptional()
-  @IsString()
-  @IsIn(['ativa', 'cancelada', 'concluida'])
-  status?: string;
+  @Type(() => Number)
+  @IsEnum(StatusMatricula, {
+    message:
+      'O status deve ser um valor válido do enum StatusMatricula (1=Ativa, 2=Cancelada, 3=Trancada, 4=Concluída)',
+  })
+  status?: StatusMatricula;
 
   @Type(() => Number)
-  @IsNumber({ maxDecimalPlaces: 2 })
-  @Min(0)
+  @IsNumber(
+    { maxDecimalPlaces: 2 },
+    {
+      message:
+        'O valor da mensalidade deve ser um número válido com até 2 casas decimais',
+    },
+  )
+  @Min(0, { message: 'O valor da mensalidade não pode ser negativo' })
   valorMensalidade: number;
 
   @IsOptional()
-  @IsString()
   observacoes?: string;
 
   @IsOptional()

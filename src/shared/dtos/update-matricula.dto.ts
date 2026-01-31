@@ -1,20 +1,20 @@
 import { Type } from 'class-transformer';
 import {
   IsArray,
-  IsIn,
+  IsEnum,
   IsInt,
   IsNumber,
   IsOptional,
-  IsString,
   Min,
   ValidateNested,
 } from 'class-validator';
+import { StatusMatricula } from '../enum/status-matricula.enum';
 import { UpdateEstudanteDto } from './update-estudante.dto';
 import { UpdateFiliacaoDto } from './update-filiacao.dto';
 
 export class UpdateMatriculaDto {
   @Type(() => Number)
-  @IsInt()
+  @IsInt({ message: 'O ID deve ser um número inteiro válido' })
   id: number;
 
   @IsOptional()
@@ -33,9 +33,12 @@ export class UpdateMatriculaDto {
   idTurno?: number;
 
   @IsOptional()
-  @IsString()
-  @IsIn(['ativa', 'cancelada', 'concluida'])
-  status?: string;
+  @Type(() => Number)
+  @IsEnum(StatusMatricula, {
+    message:
+      'O status deve ser um valor válido do enum StatusMatricula (1=Ativa, 2=Cancelada, 3=Trancada, 4=Concluída)',
+  })
+  status?: StatusMatricula;
 
   @IsOptional()
   @Type(() => Number)
@@ -44,7 +47,6 @@ export class UpdateMatriculaDto {
   valorMensalidade?: number;
 
   @IsOptional()
-  @IsString()
   observacoes?: string;
 
   @IsOptional()

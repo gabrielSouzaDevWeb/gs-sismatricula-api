@@ -9,9 +9,9 @@ import {
 
 // Versão para criação aninhada dentro de matrícula (idEstudante é atribuído pelo serviço)
 export class CreateFiliacaoNestedDto {
-  @IsString()
-  @IsNotEmpty()
-  @MaxLength(255)
+  @IsString({ message: 'O nome deve ser uma texto válida' })
+  @IsNotEmpty({ message: 'O nome é obrigatório' })
+  @MaxLength(255, { message: 'O nome não pode ter mais de 255 caracteres' })
   nome: string;
 
   @IsOptional()
@@ -19,7 +19,6 @@ export class CreateFiliacaoNestedDto {
   isResponsavelPagamento?: boolean;
 
   @IsOptional()
-  @IsDateString()
   dataNascimento?: string;
 
   @IsOptional()

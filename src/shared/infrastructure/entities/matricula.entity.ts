@@ -1,3 +1,4 @@
+import { StatusMatricula } from 'src/shared/enum/status-matricula.enum';
 import {
   Column,
   DeleteDateColumn,
@@ -43,8 +44,8 @@ export class Matricula {
   @Column({ type: 'int', nullable: true, name: 'id_responsavel_pagamento' })
   idResponsavelPagamento: number;
 
-  @Column({ type: 'varchar', length: 50, default: 'ativa' })
-  status?: string; // ativa, cancelada, concluida
+  @Column({ type: 'int', default: StatusMatricula.ATIVA })
+  status: StatusMatricula;
 
   @Column({
     type: 'decimal',
