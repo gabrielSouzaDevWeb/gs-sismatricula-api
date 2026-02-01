@@ -32,21 +32,6 @@ build:
 deploy-to-caprover:
   stage: deploy
   image: caprover/cli-caprover:latest
-  variables:
-    CAPROVER_API: '${CAPROVER_URL}/api/v2'
-  before_script:
-    # Configura registry no CapRover se ainda não estiver configurado
-    - |
-      echo "Configurando acesso ao GitLab Container Registry..."
-      curl -X POST "${CAPROVER_API}/user/registries/insert" \
-        -H "Content-Type: application/json" \
-        -H "x-captain-auth: ${CAPROVER_PASSWORD}" \
-        -d '{
-          "registryUser": "'"${GITLAB_DEPLOY_USER}"'",
-          "registryPassword": "'"${GITLAB_DEPLOY_TOKEN}"'",
-          "registryDomain": "registry.gitlab.com",
-          "registryImagePrefix": "registry.gitlab.com"
-        }' || echo "Registry já pode estar configurado"
   script:
     - echo "Deploy automático para CapRover iniciado..."
     - caprover deploy -h "$CAPROVER_URL" -p "$CAPROVER_PASSWORD" -a "$CAPROVER_APP" -i "$CI_REGISTRY_IMAGE:$CI_COMMIT_SHA"
