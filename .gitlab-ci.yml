@@ -40,3 +40,22 @@ build-docker-master:
 
   only:
     - main
+build-docker-main:
+  image:
+    name: gcr.io/kaniko-project/executor:latest
+    entrypoint: ['']
+
+  stage: build
+
+  script:
+    - echo "{\"auths\":{\"$CI_REGISTRY\":{\"username\":\"$CI_REGISTRY_USER\",\"password\":\"$CI_REGISTRY_PASSWORD\"}}}" > /kaniko/.docker/config.json
+    - export CONTAINER_FULL_IMAGE_NAME_WITH_TAG=$CI_REGISTRY_IMAGE/my-build-image:$CI_COMMIT_SHA
+    - /kaniko/executor
+      --context $CI_PROJECT_DIR
+      --dockerfile $CI_PROJECT_DIR/Dockerfile
+      --destination $CONTAINER_FULL_IMAGE_NAME_WITH_TAG
+    - echo "Deploying on CapRover..."
+    - docker run caprover/cli-caprover:v2.1.1 caprover deploy --caproverUrl $CAPROVER_URL --caproverPassword $CAPROVER_PASSWORD --caproverApp $CAPROVER_APP --imageName $CONTAINER_FULL_IMAGE_NAME_WITH_TAG
+
+  only:
+    - main
