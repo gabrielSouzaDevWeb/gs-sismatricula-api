@@ -17,11 +17,7 @@ deploy-to-caprover:
 
   script:
     - echo "Deploy automático para CapRover iniciado..."
-    - caprover deploy \
-      --caproverUrl $CAPROVER_URL \
-      --caproverPassword $CAPROVER_PASSWORD \
-      --appName $CAPROVER_APP \
-      --imageName $CI_REGISTRY_IMAGE/my-build-image:$CI_COMMIT_SHA
+    - caprover deploy --caproverUrl "$CAPROVER_URL" --caproverPassword "$CAPROVER_PASSWORD" --appName "$CAPROVER_APP" --imageName "$CI_REGISTRY_IMAGE/my-build-image:$CI_COMMIT_SHA"
 
   only:
     - main
