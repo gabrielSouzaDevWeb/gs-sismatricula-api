@@ -3,6 +3,7 @@ include:
 
 stages:
   - secret-detection
+  - build
   - deploy
 
 variables:
@@ -11,6 +12,19 @@ variables:
 secret_detection:
   stage: secret-detection
 
+build:
+  stage: build
+  image: docker:latest
+  services:
+    - docker:dind
+  before_script:
+    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+  script:
+    - docker build -t $CI_REGISTRY_IMAGE:$CI_COMMIT_SHA .
+    - docker push $CI_REGISTRY_IMAGE:$CI_COMMIT_SHA
+  only:
+    - main
+
 deploy-to-caprover:
   stage: deploy
   image: caprover/cli-caprover:latest
@@ -18,10 +32,10 @@ deploy-to-caprover:
   script:
     - echo "Deploy automático para CapRover iniciado..."
     - caprover deploy \
-      --caproverUrl $CAPROVER_URL \
-      --caproverPassword $CAPROVER_PASSWORD \
-      --appName $CAPROVER_APP \
-      --imageName $CI_REGISTRY_IMAGE/my-build-image:$CI_COMMIT_SHA
+      -h $CAPROVER_URL \
+      -p $CAPROVER_PASSWORD \
+      -a $CAPROVER_APP \
+      -i $CI_REGISTRY_IMAGE:$CI_COMMIT_SHA
 
   only:
     - main
