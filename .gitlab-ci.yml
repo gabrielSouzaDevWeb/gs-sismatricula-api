@@ -17,7 +17,13 @@ build-docker-master:
   stage: build
   services:
     - docker:19.03.1-dind
+
+  variables:
+    DOCKER_TLS_CERTDIR: ''
+    DOCKER_HOST: tcp://docker:2375/
+
   before_script:
+    - docker info
     - export DOCKER_REGISTRY_USER=$CI_REGISTRY_USER
     - export DOCKER_REGISTRY_PASSWORD=$CI_REGISTRY_PASSWORD
     - export DOCKER_REGISTRY_URL=$CI_REGISTRY
