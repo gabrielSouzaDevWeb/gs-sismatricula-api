@@ -17,6 +17,7 @@ deploy-to-caprover:
 
   script:
     - echo "Iniciando deploy no CapRover..."
+    - |
     - caprover deploy \
       --caproverUrl $CAPROVER_URL \
       --caproverPassword $CAPROVER_PASSWORD \
