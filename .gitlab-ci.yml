@@ -28,14 +28,8 @@ build:
 deploy-to-caprover:
   stage: deploy
   image: caprover/cli-caprover:latest
-
   script:
     - echo "Deploy automático para CapRover iniciado..."
-    - caprover deploy \
-      -h $CAPROVER_URL \
-      -p $CAPROVER_PASSWORD \
-      -a $CAPROVER_APP \
-      -i $CI_REGISTRY_IMAGE:$CI_COMMIT_SHA
-
+    - caprover deploy -h $CAPROVER_URL -p $CAPROVER_PASSWORD -a $CAPROVER_APP -i $CI_REGISTRY_IMAGE:$CI_COMMIT_SHA
   only:
     - main
