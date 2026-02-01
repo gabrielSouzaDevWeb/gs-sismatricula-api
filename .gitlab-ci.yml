@@ -8,6 +8,8 @@ stages:
 
 variables:
   SECRET_DETECTION_ENABLED: 'true'
+  DOCKER_DRIVER: overlay2
+  DOCKER_TLS_CERTDIR: '/certs'
 
 secret_detection:
   stage: secret-detection
@@ -20,16 +22,33 @@ build:
   before_script:
     - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
   script:
-    - docker build -t $CI_REGISTRY_IMAGE:$CI_COMMIT_SHA .
+    - echo "Building Docker image..."
+    - docker build -t $CI_REGISTRY_IMAGE:$CI_COMMIT_SHA -t $CI_REGISTRY_IMAGE:latest .
     - docker push $CI_REGISTRY_IMAGE:$CI_COMMIT_SHA
+    - docker push $CI_REGISTRY_IMAGE:latest
   only:
     - main
 
 deploy-to-caprover:
   stage: deploy
   image: caprover/cli-caprover:latest
+  variables:
+    CAPROVER_API: '${CAPROVER_URL}/api/v2'
+  before_script:
+    # Configura registry no CapRover se ainda não estiver configurado
+    - |
+      echo "Configurando acesso ao GitLab Container Registry..."
+      curl -X POST "${CAPROVER_API}/user/registries/insert" \
+        -H "Content-Type: application/json" \
+        -H "x-captain-auth: ${CAPROVER_PASSWORD}" \
+        -d '{
+          "registryUser": "'"${GITLAB_DEPLOY_USER}"'",
+          "registryPassword": "'"${GITLAB_DEPLOY_TOKEN}"'",
+          "registryDomain": "registry.gitlab.com",
+          "registryImagePrefix": "registry.gitlab.com"
+        }' || echo "Registry já pode estar configurado"
   script:
     - echo "Deploy automático para CapRover iniciado..."
-    - caprover deploy -h $CAPROVER_URL -p $CAPROVER_PASSWORD -a $CAPROVER_APP -i $CI_REGISTRY_IMAGE:$CI_COMMIT_SHA
+    - caprover deploy -h "$CAPROVER_URL" -p "$CAPROVER_PASSWORD" -a "$CAPROVER_APP" -i "$CI_REGISTRY_IMAGE:$CI_COMMIT_SHA"
   only:
     - main
