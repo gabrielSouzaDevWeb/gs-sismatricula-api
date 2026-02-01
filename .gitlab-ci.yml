@@ -18,10 +18,10 @@ deploy-to-caprover:
   script:
     - echo "Iniciando deploy no CapRover..."
     - |
-    - caprover deploy \
-      --caproverUrl $CAPROVER_URL \
-      --caproverPassword $CAPROVER_PASSWORD \
-      --caproverApp $CAPROVER_APP
+      caprover deploy \
+        --caproverUrl $CAPROVER_URL \
+        --caproverPassword $CAPROVER_PASSWORD \
+        --caproverApp $CAPROVER_APP
 
   only:
     - main
