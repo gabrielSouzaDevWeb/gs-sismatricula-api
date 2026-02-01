@@ -16,12 +16,12 @@ deploy-to-caprover:
   image: caprover/cli-caprover:latest
 
   script:
-    - echo "Iniciando deploy no CapRover..."
-    - |
-      caprover deploy \
-        --caproverUrl $CAPROVER_URL \
-        --caproverPassword $CAPROVER_PASSWORD \
-        --caproverApp $CAPROVER_APP
+    - echo "Deploy automático para CapRover iniciado..."
+    - caprover deploy \
+      --caproverUrl $CAPROVER_URL \
+      --caproverPassword $CAPROVER_PASSWORD \
+      --appName $CAPROVER_APP \
+      --imageName $CI_REGISTRY_IMAGE/my-build-image:$CI_COMMIT_SHA
 
   only:
     - main
