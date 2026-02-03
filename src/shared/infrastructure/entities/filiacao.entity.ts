@@ -2,12 +2,10 @@ import {
   Column,
   DeleteDateColumn,
   Entity,
-  JoinColumn,
-  ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import { Estudante } from './estudante.entity';
+import { EstudanteFiliacao } from './estudante-filiacao.entity';
 import { Matricula } from './matricula.entity';
 
 @Entity('filiacoes')
@@ -104,12 +102,11 @@ export class Filiacao {
   @Column({ type: 'varchar', length: 255, nullable: true })
   email?: string;
 
-  @ManyToOne(() => Estudante, (estudante) => estudante.filiacoes)
-  @JoinColumn({ name: 'id_estudante' })
-  estudante: Estudante;
-
-  @Column({ type: 'int', name: 'id_estudante' })
-  idEstudante: number;
+  @OneToMany(
+    () => EstudanteFiliacao,
+    (estudanteFiliacao) => estudanteFiliacao.filiacao,
+  )
+  estudantesFiliacoes: EstudanteFiliacao[];
 
   @OneToMany(() => Matricula, (matricula) => matricula.responsavelPagamento)
   matriculasResponsavelPagamento: Matricula[];

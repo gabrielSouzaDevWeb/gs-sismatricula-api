@@ -1,10 +1,4 @@
-import {
-  IsInt,
-  IsNotEmpty,
-  IsOptional,
-  IsString,
-  MaxLength,
-} from 'class-validator';
+import { IsNotEmpty, IsOptional, IsString, MaxLength } from 'class-validator';
 
 export class CreateFiliacaoDto {
   @IsString({ message: 'O nome deve ser uma texto válida' })
@@ -93,7 +87,4 @@ export class CreateFiliacaoDto {
   @IsOptional()
   @MaxLength(255)
   email?: string;
-
-  @IsInt({ message: 'O ID do estudante deve ser um número inteiro válido' })
-  idEstudante: number;
 }

@@ -29,13 +29,13 @@ export class AddResponsavelPagamentoToMatricula1704326900000 implements Migratio
 
     if (!foreignKeyExists) {
       await queryRunner.createForeignKey(
-      'matriculas',
-      new TableForeignKey({
-        columnNames: ['idResponsavelPagamento'],
-        referencedColumnNames: ['id'],
-        referencedTableName: 'filiacoes',
-        onDelete: 'SET NULL',
-      }),
+        'matriculas',
+        new TableForeignKey({
+          columnNames: ['idResponsavelPagamento'],
+          referencedColumnNames: ['id'],
+          referencedTableName: 'filiacoes',
+          onDelete: 'SET NULL',
+        }),
       );
     }
   }

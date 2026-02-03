@@ -1,6 +1,6 @@
 import { MigrationInterface, QueryRunner, TableColumn } from 'typeorm';
 
-export class RemoveDataMatriculaColumn2026010400001 implements MigrationInterface {
+export class RemoveDataMatriculaColumn1770073166192 implements MigrationInterface {
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.dropColumn('matriculas', 'dataMatricula');
   }

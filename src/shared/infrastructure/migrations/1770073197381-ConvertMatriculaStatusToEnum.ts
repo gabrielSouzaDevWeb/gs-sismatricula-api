@@ -1,6 +1,6 @@
 import { MigrationInterface, QueryRunner, TableColumn } from 'typeorm';
 
-export class ConvertMatriculaStatusToEnum2026020100001 implements MigrationInterface {
+export class ConvertMatriculaStatusToEnum1770073197381 implements MigrationInterface {
   public async up(queryRunner: QueryRunner): Promise<void> {
     // Criar coluna temporária para armazenar valores numéricos
     await queryRunner.addColumn(

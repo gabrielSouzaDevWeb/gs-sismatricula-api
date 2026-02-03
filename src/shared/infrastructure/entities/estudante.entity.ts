@@ -5,7 +5,7 @@ import {
   OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import { Filiacao } from './filiacao.entity';
+import { EstudanteFiliacao } from './estudante-filiacao.entity';
 import { Matricula } from './matricula.entity';
 
 @Entity('estudantes')
@@ -48,8 +48,11 @@ export class Estudante {
   @Column({ type: 'text', nullable: true, name: 'medicacao_especifica' })
   medicacaoEspecifica: string;
 
-  @OneToMany(() => Filiacao, (filiacao) => filiacao.estudante)
-  filiacoes: Filiacao[];
+  @OneToMany(
+    () => EstudanteFiliacao,
+    (estudanteFiliacao) => estudanteFiliacao.estudante,
+  )
+  estudantesFiliacoes: EstudanteFiliacao[];
 
   @OneToMany(() => Matricula, (matricula) => matricula.estudante)
   matriculas: Matricula[];

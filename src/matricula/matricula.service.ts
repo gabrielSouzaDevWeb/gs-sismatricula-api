@@ -13,7 +13,10 @@ import {
   MatriculaQueryDto,
   UpdateMatriculaDto,
 } from '../shared/dtos';
-import { Estudante } from '../shared/infrastructure/entities';
+import {
+  Estudante,
+  EstudanteFiliacao,
+} from '../shared/infrastructure/entities';
 import { Matricula } from '../shared/infrastructure/entities/matricula.entity';
 import { TENANT_CONNECTION_DATABASE_PROVIDER } from '../shared/infrastructure/tenant';
 import { ServiceResponse } from '../shared/utils';
@@ -74,10 +77,22 @@ export class MatriculaService {
       const estudanteEntity = estudanteRepo.create(data.estudante);
       const estudanteSaved = await estudanteRepo.save(estudanteEntity);
 
-      const filiacaoEntities = (data.filiacoes ?? []).map((filiacao) =>
-        filiacaoRepo.create({ ...filiacao, idEstudante: estudanteSaved.id }),
-      );
+      // Criar filiações sem o campo idEstudante (removido do modelo)
+      const filiacaoEntities = (data.filiacoes ?? []).map((filiacao) => {
+        const { isResponsavelPagamento, ...filiacaoData } = filiacao;
+        return filiacaoRepo.create(filiacaoData);
+      });
       const filiacoesSaved = await filiacaoRepo.save(filiacaoEntities);
+
+      // Criar vínculos na tabela intermediária estudantes_filiacoes
+      const estudanteFiliacaoRepo = manager.getRepository(EstudanteFiliacao);
+      const vinculosEntities = filiacoesSaved.map((filiacao) =>
+        estudanteFiliacaoRepo.create({
+          idEstudante: estudanteSaved.id,
+          idFiliacao: filiacao.id,
+        }),
+      );
+      await estudanteFiliacaoRepo.save(vinculosEntities);
 
       // Pegar ID da filiação responsável pelo pagamento
       const indexResponsavel = data.filiacoes.findIndex(
@@ -105,7 +120,13 @@ export class MatriculaService {
 
     const matriculaWithRelations = await this.repository.findOne({
       where: { id: result.matriculaSaved.id },
-      relations: { estudante: { filiacoes: true }, turno: true },
+      relations: {
+        estudante: {
+          estudantesFiliacoes: { filiacao: true },
+        },
+        turno: true,
+        responsavelPagamento: true,
+      },
     });
 
     return new ServiceResponse(
@@ -137,7 +158,9 @@ export class MatriculaService {
     const [items, total] = await this.repository.findAndCount({
       where,
       relations: {
-        estudante: { filiacoes: true },
+        estudante: {
+          estudantesFiliacoes: { filiacao: true },
+        },
         turno: true,
         responsavelPagamento: true,
       },
@@ -156,7 +179,13 @@ export class MatriculaService {
   async findOne(id: number): Promise<ServiceResponse<Matricula | null>> {
     const item = await this.repository.findOne({
       where: { id },
-      relations: { estudante: { filiacoes: true }, turno: true },
+      relations: {
+        estudante: {
+          estudantesFiliacoes: { filiacao: true },
+        },
+        turno: true,
+        responsavelPagamento: true,
+      },
     });
     return new ServiceResponse('Matrícula recuperada com sucesso', item);
   }
@@ -181,15 +210,24 @@ export class MatriculaService {
         await estudanteRepo.update(existing.idEstudante, data.estudante);
       }
       if (data.filiacoes && data.filiacoes.length > 0) {
-        for (const filiacao of data.filiacoes) {
-          delete filiacao.isResponsavelPagamento;
-          if (!filiacao.id) {
-            filiacao.idEstudante = existing.idEstudante;
-            await filiacaoRepo.save(filiacao);
-          }
+        const estudanteFiliacaoRepo = manager.getRepository(EstudanteFiliacao);
 
-          await filiacaoRepo.update(filiacao.id!, filiacao);
-          //remove campo temporário
+        for (const filiacao of data.filiacoes) {
+          const { isResponsavelPagamento, ...filiacaoData } = filiacao;
+
+          if (!filiacao.id) {
+            // Nova filiação - criar filiação e depois o vínculo
+            const novaFiliacao = await filiacaoRepo.save(filiacaoData);
+
+            // Criar vínculo na tabela intermediária
+            await estudanteFiliacaoRepo.save({
+              idEstudante: existing.idEstudante,
+              idFiliacao: novaFiliacao.id,
+            });
+          } else {
+            // Atualizar filiação existente
+            await filiacaoRepo.update(filiacao.id, filiacaoData);
+          }
         }
       }
 
@@ -204,7 +242,9 @@ export class MatriculaService {
       const updated = await this.repository.findOne({
         where: { id },
         relations: {
-          estudante: { filiacoes: true },
+          estudante: {
+            estudantesFiliacoes: { filiacao: true },
+          },
           turno: true,
           responsavelPagamento: true,
         },

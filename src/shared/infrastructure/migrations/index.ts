@@ -3,7 +3,11 @@ export { CreateFiliacaoTable1704326500000 } from './1704326500000-CreateFiliacao
 export { CreateHorarioTable1704326700000 } from './1704326700000-CreateHorarioTable';
 export { CreateMatriculaTable1704326800000 } from './1704326800000-CreateMatriculaTable';
 export { AddResponsavelPagamentoToMatricula1704326900000 } from './1704326900000-AddResponsavelPagamentoToMatricula';
-export { AddSoftDeleteColumns2026010300001 } from './2026010300001-AddSoftDeleteColumns';
-export { RemoveDataMatriculaColumn2026010400001 } from './2026010400001-RemoveDataMatriculaColumn';
-export { ConvertColumnsToSnakeCase2026012601001 } from './2026012601001-ConvertColumnsToSnakeCase';
-export { AdjustColumnNullability2026012602001 } from './2026012602001-AdjustColumnNullability';
+export { AddSoftDeleteColumns1770072912686 } from './1770072912686-AddSoftDeleteColumns';
+export { RemoveDataMatriculaColumn1770073166192 } from './1770073166192-RemoveDataMatriculaColumn';
+export { ConvertColumnsToSnakeCase1770073176214 } from './1770073176214-ConvertColumnsToSnakeCase';
+export { AdjustColumnNullability1770073188023 } from './1770073188023-AdjustColumnNullability';
+export { ConvertMatriculaStatusToEnum1770073197381 } from './1770073197381-ConvertMatriculaStatusToEnum';
+export { CreateEstudantesFiliacoesTable1770073209812 } from './1770073209812-CreateEstudantesFiliacoesTable';
+export { MigrateDataToEstudantesFiliacoes1770073223110 } from './1770073223110-MigrateDataToEstudantesFiliacoes';
+export { RemoveIdEstudanteFromFiliacoes1770073237507 } from './1770073237507-RemoveIdEstudanteFromFiliacoes';

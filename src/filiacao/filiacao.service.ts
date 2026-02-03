@@ -1,6 +1,9 @@
 import { Inject, Injectable, NotFoundException, Scope } from '@nestjs/common';
 import { CreateFiliacaoDto, FiliacaoQueryDto } from 'src/shared/dtos';
-import { Matricula } from 'src/shared/infrastructure/entities';
+import {
+  EstudanteFiliacao,
+  Matricula,
+} from 'src/shared/infrastructure/entities';
 import { DataSource, ILike, Repository } from 'typeorm';
 import { Filiacao } from '../shared/infrastructure/entities/filiacao.entity';
 import { TENANT_CONNECTION_DATABASE_PROVIDER } from '../shared/infrastructure/tenant';
@@ -23,6 +26,34 @@ export class FiliacaoService {
     return new ServiceResponse('Filiação criada com sucesso', saved);
   }
 
+  /**
+   * Cria uma filiação e já vincula a um estudante na tabela intermediária
+   */
+  async createComVinculo(
+    filiacaoData: CreateFiliacaoDto,
+    idEstudante: number,
+  ): Promise<ServiceResponse<Filiacao>> {
+    return await this.dataSource.transaction(async (manager) => {
+      const filiacaoRepo = manager.getRepository(Filiacao);
+      const estudanteFiliacaoRepo = manager.getRepository(EstudanteFiliacao);
+
+      // Criar filiação
+      const entity = filiacaoRepo.create(filiacaoData);
+      const saved = await filiacaoRepo.save(entity);
+
+      // Criar vínculo
+      await estudanteFiliacaoRepo.save({
+        idEstudante,
+        idFiliacao: saved.id,
+      });
+
+      return new ServiceResponse(
+        'Filiação criada e vinculada com sucesso',
+        saved,
+      );
+    });
+  }
+
   async findAll(query: FiliacaoQueryDto): Promise<ServiceResponse<Filiacao[]>> {
     const page = query.page ?? 1;
     const limit = query.perPage ?? 10;
@@ -33,7 +64,7 @@ export class FiliacaoService {
 
     const [items, total] = await this.repository.findAndCount({
       where,
-      relations: { estudante: true },
+      relations: { estudantesFiliacoes: { estudante: true } },
       skip: (page - 1) * limit,
       take: limit,
       order: { nome: 'ASC' },
@@ -49,7 +80,7 @@ export class FiliacaoService {
   async findOne(id: number): Promise<ServiceResponse<Filiacao | null>> {
     const item = await this.repository.findOne({
       where: { id },
-      relations: { estudante: true },
+      relations: { estudantesFiliacoes: { estudante: true } },
     });
     return new ServiceResponse('Filiação recuperada com sucesso', item);
   }
@@ -69,20 +100,29 @@ export class FiliacaoService {
     await this.repository.update(id, data);
     const updated = await this.repository.findOne({
       where: { id },
-      relations: { estudante: true },
+      relations: { estudantesFiliacoes: { estudante: true } },
     });
     return new ServiceResponse('Filiação atualizada com sucesso', updated);
   }
 
-  async remove(id: number): Promise<ServiceResponse<null>> {
+  async removeFiliacaoEstudante({
+    idEstudante,
+    idFiliacao,
+  }: {
+    idEstudante: number;
+    idFiliacao: number;
+  }): Promise<ServiceResponse<null>> {
     const delResult = await this.dataSource.manager.transaction(
       async (transactionalEntityManager) => {
         const matriculaRepo =
           transactionalEntityManager.getRepository(Matricula);
-        const filiacaoRepo = transactionalEntityManager.getRepository(Filiacao);
+        const estudantefiliacaoRepo =
+          transactionalEntityManager.getRepository(EstudanteFiliacao);
 
         const isFiliacaoResposavelPagamento: boolean =
-          await matriculaRepo.exists({ where: { idResponsavelPagamento: id } });
+          await matriculaRepo.exists({
+            where: { idResponsavelPagamento: idFiliacao },
+          });
 
         if (isFiliacaoResposavelPagamento) {
           throw new NotFoundException(
@@ -90,7 +130,10 @@ export class FiliacaoService {
           );
         }
 
-        return await filiacaoRepo.softDelete({ id });
+        return await estudantefiliacaoRepo.softDelete({
+          idEstudante,
+          idFiliacao,
+        });
 
         // await estudanteRepo.softDelete(id);
       },

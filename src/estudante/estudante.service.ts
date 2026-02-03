@@ -37,7 +37,10 @@ export class EstudanteService {
 
     const [items, total] = await this.repository.findAndCount({
       where,
-      relations: { filiacoes: true, matriculas: true },
+      relations: {
+        estudantesFiliacoes: { filiacao: true },
+        matriculas: true,
+      },
       skip: (page - 1) * limit,
       take: limit,
       order: { nome: 'ASC' },
@@ -53,7 +56,10 @@ export class EstudanteService {
   async findOne(id: number): Promise<ServiceResponse<Estudante | null>> {
     const item = await this.repository.findOne({
       where: { id },
-      relations: { filiacoes: true, matriculas: true },
+      relations: {
+        estudantesFiliacoes: { filiacao: true },
+        matriculas: true,
+      },
     });
     return new ServiceResponse('Estudante recuperado com sucesso', item);
   }
@@ -73,7 +79,10 @@ export class EstudanteService {
     await this.repository.update(id, data);
     const updated = await this.repository.findOne({
       where: { id },
-      relations: { filiacoes: true, matriculas: true },
+      relations: {
+        estudantesFiliacoes: { filiacao: true },
+        matriculas: true,
+      },
     });
     return new ServiceResponse('Estudante atualizado com sucesso', updated);
   }

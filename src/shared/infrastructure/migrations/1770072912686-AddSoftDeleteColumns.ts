@@ -1,6 +1,6 @@
 import { MigrationInterface, QueryRunner, TableColumn } from 'typeorm';
 
-export class AddSoftDeleteColumns2026010300001 implements MigrationInterface {
+export class AddSoftDeleteColumns1770072912686 implements MigrationInterface {
   public async up(queryRunner: QueryRunner): Promise<void> {
     const column = new TableColumn({
       name: 'dtDeletado',

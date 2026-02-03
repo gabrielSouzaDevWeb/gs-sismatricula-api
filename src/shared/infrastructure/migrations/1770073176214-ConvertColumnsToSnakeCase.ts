@@ -1,6 +1,6 @@
 import { MigrationInterface, QueryRunner } from 'typeorm';
 
-export class ConvertColumnsToSnakeCase2026012601001 implements MigrationInterface {
+export class ConvertColumnsToSnakeCase1770073176214 implements MigrationInterface {
   public async up(queryRunner: QueryRunner): Promise<void> {
     // ====== ESTUDANTES TABLE ======
     await queryRunner.renameColumn(

@@ -43,8 +43,14 @@ export class FiliacaoController {
     return this.service.update(id, data);
   }
 
-  @Delete('delete/:id')
-  remove(@Param('id', ParseIntPipe) id: number) {
-    return this.service.remove(id);
+  @Delete('remove-estudante-filiacao/:idEstudante/:idFiliacao')
+  remove(
+    @Param('idEstudante', ParseIntPipe) idEstudante: number,
+    @Param('idFiliacao', ParseIntPipe) idFiliacao: number,
+  ) {
+    return this.service.removeFiliacaoEstudante({
+      idEstudante,
+      idFiliacao,
+    });
   }
 }

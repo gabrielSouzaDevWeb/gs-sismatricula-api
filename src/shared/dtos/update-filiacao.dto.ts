@@ -96,10 +96,6 @@ export class UpdateFiliacaoDto implements Partial<Filiacao> {
   email?: string;
 
   @IsOptional()
-  @IsInt()
-  idEstudante?: number;
-
-  @IsOptional()
   @Type(() => Number)
   @IsInt()
   isResponsavelPagamento?: number;

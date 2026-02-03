@@ -1,8 +1,8 @@
 import { Injectable, Scope } from '@nestjs/common';
 import { DataSource } from 'typeorm';
 import * as entities from './entities';
-import { connection } from './tennant/middlewares/tenant.middleware';
 import * as migrations from './migrations';
+import { connection } from './tennant/middlewares/tenant.middleware';
 
 @Injectable({ scope: Scope.REQUEST })
 export class DynamicDataSourceProvider {
@@ -24,11 +24,11 @@ export class DynamicDataSourceProvider {
         migrations,
         migrationsRun: true,
         logging: true,
-        synchronize: false,
+        synchronize: true,
       });
 
       await dataSource.initialize();
-      return dataSource as DataSource;
+      return dataSource;
     } catch (error) {
       throw error;
     }

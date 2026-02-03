@@ -1,6 +1,6 @@
 import { MigrationInterface, QueryRunner } from 'typeorm';
 
-export class AdjustColumnNullability2026012602001 implements MigrationInterface {
+export class AdjustColumnNullability1770073188023 implements MigrationInterface {
   public async up(queryRunner: QueryRunner): Promise<void> {
     // ====== ESTUDANTE TABLE ======
     // Make required: nome, sexo
