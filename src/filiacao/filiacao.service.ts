@@ -130,6 +130,16 @@ export class FiliacaoService {
           );
         }
 
+        const vinculoCount = await estudantefiliacaoRepo.count({
+          where: { idEstudante },
+        });
+
+        if (vinculoCount === 1) {
+          throw new NotFoundException(
+            `Não é possível remover a única vinculação desta filiação ao estudante.`,
+          );
+        }
+
         return await estudantefiliacaoRepo.softDelete({
           idEstudante,
           idFiliacao,
