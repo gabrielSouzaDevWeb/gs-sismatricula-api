@@ -111,6 +111,7 @@ export class MatriculaService {
       const estudanteRepo = manager.getRepository(Estudante);
       const filiacaoRepo = manager.getRepository(Filiacao);
       const matriculaRepo = manager.getRepository(Matricula);
+      const mensalidadeRepo = manager.getRepository(Mensalidade);
 
       // Validar que existe exatamente 1 responsável pelo pagamento
       const responsaveis = data.filiacoes.filter(
@@ -208,7 +209,6 @@ export class MatriculaService {
       });
       const matriculaSaved = await matriculaRepo.save(matriculaEntity);
 
-      const mensalidadeRepo = manager.getRepository(Mensalidade);
       const mensalidadesPayload = this.criarMensalidades({
         idMatricula: matriculaSaved.id,
         anoLetivo: matriculaSaved.anoLetivo,
