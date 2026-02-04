@@ -224,9 +224,21 @@ export class MatriculaService {
               idEstudante: existing.idEstudante,
               idFiliacao: novaFiliacao.id,
             });
+
+            if (isResponsavelPagamento) {
+              await matriculaRepo.update(id, {
+                idResponsavelPagamento: novaFiliacao.id,
+              });
+            }
           } else {
             // Atualizar filiação existente
             await filiacaoRepo.update(filiacao.id, filiacaoData);
+
+            if (isResponsavelPagamento) {
+              await matriculaRepo.update(id, {
+                idResponsavelPagamento: filiacao.id,
+              });
+            }
           }
         }
       }
@@ -236,10 +248,10 @@ export class MatriculaService {
 
       // Atualizar matrícula apenas se houver campos para atualizar
       if (Object.keys(matriculaData).length > 0) {
-        await this.repository.update(id, matriculaData);
+        await matriculaRepo.update(id, matriculaData);
       }
 
-      const updated = await this.repository.findOne({
+      const updated = await matriculaRepo.findOne({
         where: { id },
         relations: {
           estudante: {
