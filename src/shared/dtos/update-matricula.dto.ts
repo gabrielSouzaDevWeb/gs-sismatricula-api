@@ -5,6 +5,7 @@ import {
   IsInt,
   IsNumber,
   IsOptional,
+  Max,
   Min,
   ValidateNested,
 } from 'class-validator';
@@ -45,6 +46,39 @@ export class UpdateMatriculaDto {
   @IsNumber({ maxDecimalPlaces: 2 })
   @Min(0)
   valorMensalidade?: number;
+
+  @IsOptional()
+  @Type(() => Number)
+  @IsNumber({ maxDecimalPlaces: 2 })
+  @Min(0)
+  valorMatricula?: number;
+
+  @IsOptional()
+  @Type(() => Number)
+  @IsInt()
+  @Min(1)
+  quantidadeMensalidades?: number;
+
+  @IsOptional()
+  @Type(() => Number)
+  @IsInt()
+  @Min(1)
+  @Max(31)
+  diaVencimento?: number;
+
+  @IsOptional()
+  @Type(() => Number)
+  @IsInt()
+  @Min(1)
+  @Max(12)
+  mesInicioMensalidade?: number;
+
+  @IsOptional()
+  @Type(() => Number)
+  @IsInt()
+  @Min(1)
+  @Max(12)
+  mesFimMensalidade?: number;
 
   @IsOptional()
   observacoes?: string;

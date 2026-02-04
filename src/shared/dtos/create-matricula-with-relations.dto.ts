@@ -7,6 +7,7 @@ import {
   IsNotEmpty,
   IsNumber,
   IsOptional,
+  Max,
   Min,
   ValidateNested,
 } from 'class-validator';
@@ -54,6 +55,42 @@ export class CreateMatriculaWithRelationsDto {
   )
   @Min(0, { message: 'O valor da mensalidade não pode ser negativo' })
   valorMensalidade?: number;
+
+  @Type(() => Number)
+  @IsNumber(
+    { maxDecimalPlaces: 2 },
+    {
+      message:
+        'O valor da matrícula deve ser um número válido com até 2 casas decimais',
+    },
+  )
+  @Min(0, { message: 'O valor da matrícula não pode ser negativo' })
+  valorMatricula: number;
+
+  @Type(() => Number)
+  @IsInt({ message: 'A quantidade de mensalidades deve ser um número inteiro' })
+  @Min(1, { message: 'A quantidade de mensalidades deve ser no mínimo 1' })
+  quantidadeMensalidades: number;
+
+  @Type(() => Number)
+  @IsInt({ message: 'O dia de vencimento deve ser um número inteiro' })
+  @Min(1, { message: 'O dia de vencimento deve ser no mínimo 1' })
+  @Max(31, { message: 'O dia de vencimento deve ser no máximo 31' })
+  diaVencimento: number;
+
+  @Type(() => Number)
+  @IsInt({
+    message: 'O mês de início da mensalidade deve ser um número inteiro',
+  })
+  @Min(1, { message: 'O mês de início deve ser entre 1 e 12' })
+  @Max(12, { message: 'O mês de início deve ser entre 1 e 12' })
+  mesInicioMensalidade: number;
+
+  @Type(() => Number)
+  @IsInt({ message: 'O mês de fim da mensalidade deve ser um número inteiro' })
+  @Min(1, { message: 'O mês de fim deve ser entre 1 e 12' })
+  @Max(12, { message: 'O mês de fim deve ser entre 1 e 12' })
+  mesFimMensalidade: number;
 
   @IsOptional()
   observacoes?: string;

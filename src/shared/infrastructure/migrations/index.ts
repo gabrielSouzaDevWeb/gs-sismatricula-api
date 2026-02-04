@@ -11,3 +11,4 @@ export { ConvertMatriculaStatusToEnum1770073197381 } from './1770073197381-Conve
 export { CreateEstudantesFiliacoesTable1770073209812 } from './1770073209812-CreateEstudantesFiliacoesTable';
 export { MigrateDataToEstudantesFiliacoes1770073223110 } from './1770073223110-MigrateDataToEstudantesFiliacoes';
 export { RemoveIdEstudanteFromFiliacoes1770073237507 } from './1770073237507-RemoveIdEstudanteFromFiliacoes';
+export { CreateMensalidadesAndAddColumnsToMatriculas1770073305000 } from './1770073305000-CreateMensalidadesAndAddColumnsToMatriculas';

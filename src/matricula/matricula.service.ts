@@ -16,6 +16,7 @@ import {
 import {
   Estudante,
   EstudanteFiliacao,
+  Mensalidade,
 } from '../shared/infrastructure/entities';
 import { Matricula } from '../shared/infrastructure/entities/matricula.entity';
 import { TENANT_CONNECTION_DATABASE_PROVIDER } from '../shared/infrastructure/tenant';
@@ -34,6 +35,73 @@ export class MatriculaService {
     private readonly filiacaoService: FiliacaoService,
   ) {
     this.repository = this.dataSource.getRepository(Matricula);
+  }
+
+  private validarConfiguracaoMensalidade(params: {
+    mesInicio: number;
+    mesFim: number;
+    diaVencimento: number;
+    quantidadeMensalidades: number;
+  }) {
+    const { mesInicio, mesFim, diaVencimento, quantidadeMensalidades } = params;
+
+    if (mesInicio < 1 || mesInicio > 12 || mesFim < 1 || mesFim > 12) {
+      throw new BadRequestException(
+        'O mês de início e fim da mensalidade devem estar entre 1 e 12',
+      );
+    }
+    if (mesFim < mesInicio) {
+      throw new BadRequestException(
+        'O mês de fim da mensalidade não pode ser anterior ao mês de início',
+      );
+    }
+    if (diaVencimento < 1 || diaVencimento > 31) {
+      throw new BadRequestException(
+        'O dia de vencimento deve estar entre 1 e 31',
+      );
+    }
+
+    const quantidadeCalculada = mesFim - mesInicio + 1;
+    if (quantidadeMensalidades !== quantidadeCalculada) {
+      throw new BadRequestException(
+        'A quantidade de mensalidades não corresponde ao período informado',
+      );
+    }
+  }
+
+  private criarMensalidades(params: {
+    idMatricula: number;
+    anoLetivo: number;
+    valorMensalidade: number;
+    mesInicio: number;
+    mesFim: number;
+    diaVencimento: number;
+  }): Array<Partial<Mensalidade>> {
+    const {
+      idMatricula,
+      anoLetivo,
+      valorMensalidade,
+      mesInicio,
+      mesFim,
+      diaVencimento,
+    } = params;
+
+    const mensalidades: Array<Partial<Mensalidade>> = [];
+    for (let mes = mesInicio; mes <= mesFim; mes += 1) {
+      const ultimoDiaDoMes = new Date(anoLetivo, mes, 0).getDate();
+      const diaAjustado = Math.min(diaVencimento, ultimoDiaDoMes);
+      const dataVencimento = new Date(anoLetivo, mes - 1, diaAjustado);
+
+      mensalidades.push({
+        idMatricula,
+        anoLetivo,
+        valorMensalidade,
+        mesMensalidade: mes,
+        dataVencimento,
+      });
+    }
+
+    return mensalidades;
   }
 
   async create(
@@ -104,16 +172,52 @@ export class MatriculaService {
           'Erro ao identificar responsável pelo pagamento',
         );
       }
+      if (
+        data.valorMensalidade === undefined ||
+        data.valorMatricula === undefined ||
+        data.quantidadeMensalidades === undefined ||
+        data.diaVencimento === undefined ||
+        data.mesInicioMensalidade === undefined ||
+        data.mesFimMensalidade === undefined
+      ) {
+        throw new BadRequestException(
+          'É necessário informar valor da matrícula, valor da mensalidade, quantidade de mensalidades, dia de vencimento e período das mensalidades',
+        );
+      }
+
+      this.validarConfiguracaoMensalidade({
+        mesInicio: data.mesInicioMensalidade,
+        mesFim: data.mesFimMensalidade,
+        diaVencimento: data.diaVencimento,
+        quantidadeMensalidades: data.quantidadeMensalidades,
+      });
+
       const matriculaEntity = matriculaRepo.create({
         anoLetivo: Number(data.anoLetivo),
         status: data.status ?? StatusMatricula.ATIVA,
+        valorMatricula: data.valorMatricula,
         valorMensalidade: data.valorMensalidade,
+        quantidadeMensalidades: data.quantidadeMensalidades,
+        diaVencimento: data.diaVencimento,
+        mesInicioMensalidade: data.mesInicioMensalidade,
+        mesFimMensalidade: data.mesFimMensalidade,
         observacoes: data.observacoes,
         idEstudante: estudanteSaved.id,
         idTurno: data.idTurno,
         idResponsavelPagamento,
       });
       const matriculaSaved = await matriculaRepo.save(matriculaEntity);
+
+      const mensalidadeRepo = manager.getRepository(Mensalidade);
+      const mensalidadesPayload = this.criarMensalidades({
+        idMatricula: matriculaSaved.id,
+        anoLetivo: matriculaSaved.anoLetivo,
+        valorMensalidade: matriculaSaved.valorMensalidade,
+        mesInicio: matriculaSaved.mesInicioMensalidade,
+        mesFim: matriculaSaved.mesFimMensalidade,
+        diaVencimento: matriculaSaved.diaVencimento,
+      });
+      await mensalidadeRepo.save(mensalidadeRepo.create(mensalidadesPayload));
 
       return { matriculaSaved };
     });
@@ -126,6 +230,7 @@ export class MatriculaService {
         },
         turno: true,
         responsavelPagamento: true,
+        mensalidades: true,
       },
     });
 
@@ -185,6 +290,7 @@ export class MatriculaService {
         },
         turno: true,
         responsavelPagamento: true,
+        mensalidades: true,
       },
     });
     return new ServiceResponse('Matrícula recuperada com sucesso', item);
@@ -251,6 +357,43 @@ export class MatriculaService {
         await matriculaRepo.update(id, matriculaData);
       }
 
+      const deveRegenerarMensalidades = [
+        'valorMensalidade',
+        'mesInicioMensalidade',
+        'mesFimMensalidade',
+        'diaVencimento',
+        'quantidadeMensalidades',
+        'anoLetivo',
+      ].some((campo) => campo in matriculaData);
+
+      if (deveRegenerarMensalidades) {
+        const matriculaAtualizada = await matriculaRepo.findOne({
+          where: { id },
+        });
+        if (matriculaAtualizada) {
+          this.validarConfiguracaoMensalidade({
+            mesInicio: matriculaAtualizada.mesInicioMensalidade,
+            mesFim: matriculaAtualizada.mesFimMensalidade,
+            diaVencimento: matriculaAtualizada.diaVencimento,
+            quantidadeMensalidades: matriculaAtualizada.quantidadeMensalidades,
+          });
+
+          const mensalidadeRepo = manager.getRepository(Mensalidade);
+          await mensalidadeRepo.softDelete({ idMatricula: id });
+          const mensalidadesPayload = this.criarMensalidades({
+            idMatricula: id,
+            anoLetivo: matriculaAtualizada.anoLetivo,
+            valorMensalidade: matriculaAtualizada.valorMensalidade,
+            mesInicio: matriculaAtualizada.mesInicioMensalidade,
+            mesFim: matriculaAtualizada.mesFimMensalidade,
+            diaVencimento: matriculaAtualizada.diaVencimento,
+          });
+          await mensalidadeRepo.save(
+            mensalidadeRepo.create(mensalidadesPayload),
+          );
+        }
+      }
+
       const updated = await matriculaRepo.findOne({
         where: { id },
         relations: {
@@ -259,6 +402,7 @@ export class MatriculaService {
           },
           turno: true,
           responsavelPagamento: true,
+          mensalidades: true,
         },
       });
       return new ServiceResponse('Matrícula atualizada com sucesso', updated);
