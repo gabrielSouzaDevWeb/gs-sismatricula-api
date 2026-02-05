@@ -1,14 +1,15 @@
 import { MiddlewareConsumer, Module, RequestMethod } from '@nestjs/common';
+import { ConfigModule } from '@nestjs/config';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { AuthModule } from './auth/auth.module';
 import { EstudanteModule } from './estudante/estudante.module';
 import { FiliacaoModule } from './filiacao/filiacao.module';
 import { MatriculaModule } from './matricula/matricula.module';
+import { MensalidadeModule } from './mensalidade/mensalidade.module';
 import { InfrastructureModule } from './shared/infrastructure/infrastructure.module';
 import { TenantMiddleware } from './shared/infrastructure/tennant/middlewares/tenant.middleware';
 import { TurnoModule } from './turno/turno.module';
-import { ConfigModule } from '@nestjs/config';
 
 @Module({
   imports: [
@@ -23,6 +24,7 @@ import { ConfigModule } from '@nestjs/config';
       envFilePath: '.env',
     }),
     MatriculaModule,
+    MensalidadeModule,
   ],
   controllers: [AppController],
   providers: [AppService],

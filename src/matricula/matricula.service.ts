@@ -268,6 +268,7 @@ export class MatriculaService {
         },
         turno: true,
         responsavelPagamento: true,
+        mensalidades: true,
       },
       skip: (page - 1) * limit,
       take: limit,
