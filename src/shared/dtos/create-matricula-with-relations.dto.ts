@@ -1,4 +1,4 @@
-import { Type } from 'class-transformer';
+import { Transform, Type } from 'class-transformer';
 import {
   ArrayMinSize,
   IsArray,
@@ -67,10 +67,12 @@ export class CreateMatriculaWithRelationsDto {
   @Min(0, { message: 'O valor da matrícula não pode ser negativo' })
   valorMatricula: number;
 
+  @IsOptional()
+  @Transform(({ value, obj }) => {})
   @Type(() => Number)
   @IsInt({ message: 'A quantidade de mensalidades deve ser um número inteiro' })
   @Min(1, { message: 'A quantidade de mensalidades deve ser no mínimo 1' })
-  quantidadeMensalidades: number;
+  quantidadeMensalidades?: number;
 
   @Type(() => Number)
   @IsInt({ message: 'O dia de vencimento deve ser um número inteiro' })
@@ -84,13 +86,30 @@ export class CreateMatriculaWithRelationsDto {
   })
   @Min(1, { message: 'O mês de início deve ser entre 1 e 12' })
   @Max(12, { message: 'O mês de início deve ser entre 1 e 12' })
-  mesInicioMensalidade: number;
+  set mesInicioMensalidade(value: number) {
+    this.quantidadeMensalidades =
+      Math.abs(value - (this.__mesInicioMensalidade__ ?? value)) + 1;
+    this.__mesInicioMensalidade__ = value;
+  }
+
+  get mesInicioMensalidade(): number {
+    return this.__mesInicioMensalidade__;
+  }
 
   @Type(() => Number)
   @IsInt({ message: 'O mês de fim da mensalidade deve ser um número inteiro' })
   @Min(1, { message: 'O mês de fim deve ser entre 1 e 12' })
   @Max(12, { message: 'O mês de fim deve ser entre 1 e 12' })
-  mesFimMensalidade: number;
+  set mesFimMensalidade(value: number) {
+    this.quantidadeMensalidades =
+      Math.abs(
+        (this.__mesFimMensalidade__ ?? value) - this.mesInicioMensalidade,
+      ) + 1;
+    this.__mesFimMensalidade__ = value;
+  }
+  get mesFimMensalidade(): number {
+    return this.__mesFimMensalidade__;
+  }
 
   @IsOptional()
   observacoes?: string;
@@ -99,4 +118,9 @@ export class CreateMatriculaWithRelationsDto {
   @Type(() => Number)
   @IsInt()
   idResponsavelPagamento?: number;
+
+  @IsOptional()
+  __mesInicioMensalidade__: number;
+  @IsOptional()
+  __mesFimMensalidade__: number;
 }

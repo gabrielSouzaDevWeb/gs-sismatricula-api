@@ -20,11 +20,11 @@ import {
   UpdateMensalidadeDto,
 } from '../shared/dtos';
 
-@Controller('mensalidades')
+@Controller('mensalidade')
 export class MensalidadeController {
   constructor(private readonly service: MensalidadeService) {}
 
-  @Get()
+  @Get('get-many')
   findAll(@Query() query: MensalidadeQueryDto) {
     return this.service.findAll(query);
   }
