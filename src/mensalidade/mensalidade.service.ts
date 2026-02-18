@@ -132,7 +132,7 @@ export class MensalidadeService {
 
     const [items, total] = await this.repository.findAndCount({
       where,
-      relations: { matricula: false },
+      relations: { matricula: { estudante: true, responsavelPagamento: true } },
       skip: (page - 1) * limit,
       take: limit,
       order: { dataVencimento: 'ASC' },
