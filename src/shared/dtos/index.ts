@@ -14,6 +14,7 @@ export * from './matricula-query.dto';
 export * from './mensalidade-query.dto';
 export * from './pagination.dto';
 export * from './registrar-pagamento.dto';
+export * from './revogar-baixa.dto';
 export * from './update-estudante.dto';
 export * from './update-filiacao.dto';
 export * from './update-matricula.dto';

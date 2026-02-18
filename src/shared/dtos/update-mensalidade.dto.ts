@@ -9,6 +9,9 @@ import {
 } from 'class-validator';
 export class UpdateMensalidadeDto {
   @IsOptional()
+  id?: number;
+
+  @IsOptional()
   @Type(() => Number)
   @IsInt({ message: 'O ID da matrícula deve ser um número inteiro válido' })
   @Min(1, { message: 'O ID da matrícula deve ser maior que 0' })

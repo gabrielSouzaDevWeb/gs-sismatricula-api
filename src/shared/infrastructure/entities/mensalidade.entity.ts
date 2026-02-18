@@ -36,6 +36,9 @@ export class Mensalidade {
   @Column({ type: 'int', name: 'mes_mensalidade' })
   mesMensalidade: number;
 
+  @Column({ type: 'int', name: 'status_pagamento', default: 1 })
+  statusPagamento: number;
+
   @Column({ type: 'date', name: 'data_vencimento' })
   dataVencimento: Date | string;
 

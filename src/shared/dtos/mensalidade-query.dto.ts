@@ -26,7 +26,7 @@ export class MensalidadeQueryDto extends PaginationDto {
   @Min(0, {
     message: 'O status da mensalidade deve ser 0 (pendente) ou 1 (pago)',
   })
-  status?: number;
+  statusPagamento?: number;
 
   @IsOptional()
   @IsString({ message: 'A competência deve ser uma string no formato YYYY-MM' })

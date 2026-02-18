@@ -17,6 +17,7 @@ import {
   MensalidadeQueryDto,
   PaginationDto,
   RegistrarPagamentoDto,
+  RevogarBaixaDto,
   UpdateMensalidadeDto,
 } from '../shared/dtos';
 
@@ -69,6 +70,14 @@ export class MensalidadeController {
     @Body() data: RegistrarPagamentoDto,
   ) {
     return this.service.registrarPagamento(id, data);
+  }
+
+  @Patch(':id/revogar-baixa')
+  revogarBaixa(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() data: RevogarBaixaDto,
+  ) {
+    return this.service.revogarBaixa(id, data);
   }
 
   @Delete(':id')

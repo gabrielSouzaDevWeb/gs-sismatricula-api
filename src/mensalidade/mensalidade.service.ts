@@ -5,6 +5,7 @@ import {
   NotFoundException,
   Scope,
 } from '@nestjs/common';
+import { StatusPagamentoMensalidade } from 'src/shared/enum/status-pagamento-mensaliade';
 import { DataSource, Repository } from 'typeorm';
 import {
   CreateMensalidadeDto,
@@ -12,6 +13,7 @@ import {
   MensalidadeQueryDto,
   PaginationDto,
   RegistrarPagamentoDto,
+  RevogarBaixaDto,
   UpdateMensalidadeDto,
 } from '../shared/dtos';
 import { Matricula, Mensalidade } from '../shared/infrastructure/entities';
@@ -126,6 +128,7 @@ export class MensalidadeService {
     if (query.idMatricula) where.idMatricula = query.idMatricula;
     if (query.mesMensalidade) where.mesMensalidade = query.mesMensalidade;
     if (query.anoLetivo) where.anoLetivo = query.anoLetivo;
+    if (query.statusPagamento) where.statusPagamento = query.statusPagamento;
 
     const [items, total] = await this.repository.findAndCount({
       where,
@@ -301,12 +304,58 @@ export class MensalidadeService {
       ? new Date(data.dataPagamento)
       : new Date();
 
-    await this.repository.update(id, { dataPagamento });
+    const statusPagamento = StatusPagamentoMensalidade.PAGO;
+
+    await this.repository.update(id, {
+      dataPagamento,
+      statusPagamento,
+      observacao: data.observacao,
+    });
     const updated = await this.repository.findOne({
       where: { id },
       relations: { matricula: true },
     });
 
     return new ServiceResponse('Pagamento registrado com sucesso', updated);
+  }
+
+  async revogarBaixa(
+    id: number,
+    data: RevogarBaixaDto,
+  ): Promise<ServiceResponse<Mensalidade | null>> {
+    const existing = await this.repository.findOne({ where: { id } });
+    if (!existing || existing.dtDeletado) {
+      throw new NotFoundException(
+        `Mensalidade ${id} não encontrada ou foi removida`,
+      );
+    }
+
+    if (!existing.dataPagamento) {
+      throw new BadRequestException(
+        'Não é possível revogar baixa de uma mensalidade sem pagamento registrado',
+      );
+    }
+
+    const updateData: Partial<Mensalidade> = {
+      dataPagamento: null,
+      statusPagamento: data.statusPagamento,
+      observacao: data.observacao,
+    };
+
+    if (data.dataVencimento) {
+      const parsedDataVencimento = new Date(data.dataVencimento);
+      if (Number.isNaN(parsedDataVencimento.getTime())) {
+        throw new BadRequestException('A data de vencimento é inválida');
+      }
+      updateData.dataVencimento = parsedDataVencimento;
+    }
+
+    await this.repository.update(id, updateData);
+    const updated = await this.repository.findOne({
+      where: { id },
+      relations: { matricula: true },
+    });
+
+    return new ServiceResponse('Baixa revogada com sucesso', updated);
   }
 }
