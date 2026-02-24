@@ -416,7 +416,18 @@ export class MatriculaService {
   }
 
   async remove(id: number): Promise<ServiceResponse<null>> {
-    await this.repository.softDelete(id);
+    const transactionResult = await this.dataSource.transaction(
+      async (manager) => {
+        const matriculaRepo = manager.getRepository(Matricula);
+        const mensalidadeRepo = manager.getRepository(Mensalidade);
+        const matriculaSoftDeletePRMS = matriculaRepo.softDelete({ id });
+        const mensalidadeSoftDeletePRMS = mensalidadeRepo.softDelete({
+          idMatricula: id,
+        });
+
+        await Promise.all([matriculaSoftDeletePRMS, mensalidadeSoftDeletePRMS]);
+      },
+    );
     return new ServiceResponse('Matrícula removida com sucesso');
   }
 }
