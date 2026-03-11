@@ -41,6 +41,23 @@ export class TenantMiddleware implements NestMiddleware {
         synchronize: process.env.TENANT_1_SYNCHRONIZE === 'S' || false,
       },
     },
+    {
+      id: parseInt(process.env.TENANT_PUBLIC_ID || '1'),
+      publicId:
+        process.env.TENANT_PUBLIC_PUBLIC_ID || 'tenant_PUBLIC_public_id',
+      connection: {
+        name:
+          `${process.env.TENANT_PUBLIC_DATABASE}_${process.env.TENANT_PUBLIC_ID}` ||
+          'c3',
+        type: process.env.TENANT_PUBLIC_TYPE || 'postgres',
+        host: process.env.TENANT_PUBLIC_HOST || 'host.docker.internal',
+        port: parseInt(process.env.TENANT_PUBLIC_PORT || '5432'),
+        username: process.env.TENANT_PUBLIC_USERNAME || 'postgres',
+        password: process.env.TENANT_PUBLIC_PASSWORD || 'postgres',
+        database: process.env.TENANT_PUBLIC_DATABASE || 'dbname',
+        synchronize: process.env.TENANT_PUBLIC_SYNCHRONIZE === 'S' || false,
+      },
+    },
   ];
   use(req: any, res: any, next: (error?: any) => void) {
     if (!req.headers['x-authentication-token']) {

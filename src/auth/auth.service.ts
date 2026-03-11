@@ -5,17 +5,29 @@ import { BruteForceService } from '../shared/services/brute-force.service';
 
 @Injectable()
 export class AuthService {
-  private users: Array<{ username: string; password: string }> = [];
+  private users: Array<{ username: string; password: string; token: string }> =
+    [];
+  //
   constructor(
     private readonly bruteForceService: BruteForceService,
     private readonly configService: ConfigService,
   ) {
-    this.users.push({
-      username:
-        this.configService.get<string>('ADMIN_USERNAME') || `${+new Date()}`,
-      password:
-        this.configService.get<string>('ADMIN_PASSWORD') || `${+new Date()}`,
-    });
+    this.users.push(
+      {
+        username:
+          this.configService.get<string>('ADMIN_USERNAME') || `${+new Date()}`,
+        password:
+          this.configService.get<string>('ADMIN_PASSWORD') || `${+new Date()}`,
+        token: process.env.TENANT_1_PUBLIC_ID || 'tenant_1_public_id',
+      },
+      {
+        username:
+          this.configService.get<string>('PUBLIC_USERNAME') || `${+new Date()}`,
+        password:
+          this.configService.get<string>('PUBLIC_PASSWORD') || `${+new Date()}`,
+        token: process.env.TENANT_PUBLIC_PUBLIC_ID || 'tenant_PUBLIC_public_id',
+      },
+    );
   }
 
   login(loginDto: LoginDto, ip: string): { token: string } {
@@ -30,6 +42,6 @@ export class AuthService {
     }
 
     this.bruteForceService.resetAttempts(ip);
-    return { token: process.env.TENANT_1_PUBLIC_ID || 'tenant_1_public_id' };
+    return { token: user.token };
   }
 }
