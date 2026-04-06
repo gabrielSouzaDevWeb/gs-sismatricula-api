@@ -33,7 +33,15 @@ export class AppModule {
   configure(consumer: MiddlewareConsumer) {
     consumer
       .apply(TenantMiddleware)
-      .exclude('/auth/(.*)')
+      .exclude(
+        '/auth/(.*)',
+        '/docs',
+        '/docs/(.*)',
+        '/docs-json',
+        '/api/docs',
+        '/api/docs/(.*)',
+        '/api/docs-json',
+      )
       .forRoutes({ path: '(.*)', method: RequestMethod.ALL });
   }
 }

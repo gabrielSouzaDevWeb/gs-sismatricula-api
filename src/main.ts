@@ -1,5 +1,6 @@
 import { ValidationPipe } from '@nestjs/common';
 import { NestFactory, Reflector } from '@nestjs/core';
+import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { AppModule } from './app.module';
 import { GlobalExceptionFilter } from './shared/filters/http-exception.filter';
 import { GeoBlockGuard, HostnameGuard, UserAgentGuard } from './shared/guards';
@@ -47,6 +48,45 @@ async function bootstrap() {
   );
 
   app.setGlobalPrefix('api');
+
+  const swaggerConfig = new DocumentBuilder()
+    .setTitle('GS SisMatricula API')
+    .setDescription(
+      [
+        'API de gerenciamento de matrículas, estudantes, filiações, turnos e mensalidades.',
+        '',
+        'Autenticação:',
+        '1. Faça login em /api/auth/login para obter o token do tenant.',
+        '2. Clique em Authorize e informe o token no esquema x-authentication-token.',
+      ].join('\n'),
+    )
+    .setVersion('1.0.0')
+    .addApiKey(
+      {
+        type: 'apiKey',
+        in: 'header',
+        name: 'x-authentication-token',
+        description: 'Token do tenant retornado no endpoint de login',
+      },
+      'x-authentication-token',
+    )
+    .build();
+
+  const swaggerDocument = SwaggerModule.createDocument(app, swaggerConfig, {
+    deepScanRoutes: true,
+  });
+
+  SwaggerModule.setup('docs', app, swaggerDocument, {
+    customSiteTitle: 'GS SisMatricula API Docs',
+    jsonDocumentUrl: 'docs-json',
+    swaggerOptions: {
+      persistAuthorization: true,
+      displayRequestDuration: true,
+      docExpansion: 'none',
+      tagsSorter: 'alpha',
+      operationsSorter: 'alpha',
+    },
+  });
 
   await app.listen(process.env.PORT ?? 3000);
 }

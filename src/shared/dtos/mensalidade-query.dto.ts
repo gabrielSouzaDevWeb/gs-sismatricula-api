@@ -1,25 +1,33 @@
+import { ApiPropertyOptional } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
 import { IsInt, IsOptional, IsString, Matches, Min } from 'class-validator';
 import { PaginationDto } from './pagination.dto';
 
 export class MensalidadeQueryDto extends PaginationDto {
+  @ApiPropertyOptional({ description: 'Filtro por matrícula', example: 1 })
   @IsOptional()
   @Type(() => Number)
   @IsInt({ message: 'O ID da matrícula deve ser um número inteiro válido' })
   @Min(1, { message: 'O ID da matrícula deve ser maior que 0' })
   idMatricula?: number;
 
+  @ApiPropertyOptional({ description: 'Filtro por mês', example: 3 })
   @IsOptional()
   @Type(() => Number)
   @IsInt({ message: 'O mês da mensalidade deve ser um número inteiro' })
   @Min(1, { message: 'O mês da mensalidade deve ser entre 1 e 12' })
   mesMensalidade?: number;
 
+  @ApiPropertyOptional({ description: 'Filtro por ano letivo', example: 2026 })
   @IsOptional()
   @Type(() => Number)
   @IsInt({ message: 'O ano letivo deve ser um número inteiro válido' })
   anoLetivo?: number;
 
+  @ApiPropertyOptional({
+    description: 'Filtro por status de pagamento',
+    example: 2,
+  })
   @IsOptional()
   @Type(() => Number)
   @IsInt({ message: 'O status da mensalidade deve ser um número inteiro' })
@@ -28,6 +36,10 @@ export class MensalidadeQueryDto extends PaginationDto {
   })
   statusPagamento?: number;
 
+  @ApiPropertyOptional({
+    description: 'Competência no formato YYYY-MM. Ex.: 2026-03',
+    example: '2026-03',
+  })
   @IsOptional()
   @IsString({ message: 'A competência deve ser uma string no formato YYYY-MM' })
   @Matches(/^\d{4}-(0[1-9]|1[0-2])$/, {
